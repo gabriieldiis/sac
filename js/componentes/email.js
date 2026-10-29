@@ -1,0 +1,25 @@
+/* Exibição de e-mails dentro do histórico do protocolo. */
+/* ================= e-mail no protocolo ================= */
+const CHN={'Telefone':['fa-phone','#0073b7'],'WhatsApp':['fa-whatsapp','#1a9e55'],'Chat do site':['fa-comments-o','#00897b'],'E-mail':['fa-envelope','#7b3fa0'],'Redes sociais':['fa-instagram','#c13584'],'Reclame Aqui':['fa-bullhorn','#c0392b'],'Procon / consumidor.gov':['fa-gavel','#34495e'],'Sistema':['fa-cog','#7a8794'],'Interna':['fa-lock','#7a8794']};
+function chnChip(c){const [ic,co]=CHN[c]||['fa-circle','#7a8794'];return `<span class="chn" style="--cc:${co}"><i class="fa ${ic}"></i> ${esc(c)}</span>`}
+const MDIR={rin:['E-mail recebido do responsável','fa-arrow-down','#00a65a'],rout:['E-mail enviado ao responsável','fa-arrow-up','#605ca8'],in:['E-mail recebido do cliente','fa-arrow-down','#7b3fa0'],out:['E-mail enviado ao cliente','fa-arrow-up','#2682bf'],fwd:['E-mail encaminhado internamente','fa-share','#605ca8']};
+function parseEmail(raw){const L=raw.replace(/\r/g,'').split('\n'),H=/^\s*(De|From)\s*:\s*(.*)$/i,msgs=[];let cur=null;
+ for(let i=0;i<L.length;i++){const l=L[i],m=l.match(H);
+  if(m&&L.slice(i+1,i+4).some(x=>/^\s*(Enviada em|Enviado em|Enviado|Sent|Data|Date|Para|To)\s*:/i.test(x))){cur={de:m[2].trim(),para:'',cc:'',quando:'',assunto:'',corpo:[]};msgs.push(cur);let j=i+1;
+   for(;j<L.length;j++){const x=L[j];let mm;if(mm=x.match(/^\s*(Enviada em|Enviado em|Enviado|Sent|Data|Date)\s*:\s*(.*)$/i))cur.quando=mm[2].trim();else if(mm=x.match(/^\s*(Para|To)\s*:\s*(.*)$/i))cur.para=mm[2].trim();else if(mm=x.match(/^\s*(Cc)\s*:\s*(.*)$/i))cur.cc=mm[2].trim();else if(mm=x.match(/^\s*(Assunto|Subject)\s*:\s*(.*)$/i))cur.assunto=mm[2].trim();else break}
+   i=j-1;continue}
+  if(!cur){cur={de:'',para:'',cc:'',quando:'',assunto:'',corpo:[]};msgs.push(cur)}
+  cur.corpo.push(l)}
+ msgs.forEach(m=>m.corpo=m.corpo.join('\n').replace(/^\n+|\n+$/g,''));return msgs.filter(m=>m.corpo||m.de)}
+function buildMail(raw,dir){const ms=parseEmail(raw);if(!ms.length)return null;return Object.assign({dir},ms[0],{anteriores:ms.slice(1)})}
+function mailMsgHTML(m,full){return `<div class="mhead">${m.de?`<div><span>De</span><b>${esc(m.de)}</b></div>`:''}${m.para?`<div><span>Para</span>${esc(m.para)}</div>`:''}${m.cc?`<div><span>Cc</span>${esc(m.cc)}</div>`:''}${m.quando?`<div><span>Enviada em</span>${esc(m.quando)}</div>`:''}</div>${m.assunto?`<div class="msubj">${esc(m.assunto)}</div>`:''}<div class="mbody${full?'':' clamp'}">${esc(m.corpo).replace(/\n/g,'<br>')}</div>`}
+function mailHTML(m){const [lb,ic,co]=MDIR[m.dir]||MDIR.in;const long=(m.corpo||'').split('\n').length>10;
+ return `<div class="mail" style="--mc:${co}"><div class="mtop"><i class="fa fa-envelope"></i> ${lb} <i class="fa ${ic}"></i></div>${mailMsgHTML(m,!long)}${long?`<button type="button" class="lnk mmore" onclick="this.previousElementSibling.classList.toggle('clamp');this.textContent=this.previousElementSibling.classList.contains('clamp')?'Ver e-mail completo':'Recolher'">Ver e-mail completo</button>`:''}
+  ${m.anteriores&&m.anteriores.length?`<details class="mprev"><summary><i class="fa fa-history"></i> ${m.anteriores.length} mensage${m.anteriores.length>1?'ns':'m'} anterior${m.anteriores.length>1?'es':''} desta conversa</summary>${m.anteriores.map(x=>`<div class="mold">${mailMsgHTML(x,true)}</div>`).join('')}</details>`:''}</div>`}
+function mailFormHTML(px,dir,raw){const ms=raw.trim()?parseEmail(raw):[];
+ return `<div class="mailf"><div class="mailf-h"><i class="fa fa-envelope"></i> E-mail <span class="soft">· cole o e-mail inteiro, com De:, Para: e Assunto:. O sistema separa cada mensagem da conversa.</span></div>
+  <div class="choice" role="radiogroup" aria-label="Direção do e-mail">${Object.entries(MDIR).filter(([k])=>['in','out','fwd'].includes(k)).map(([k,[l,ic]])=>`<button type="button" data-mdir="${px}|${k}" aria-pressed="${dir===k}"><i class="fa ${ic}"></i> ${px==='r'?l.replace('E-mail ','').replace(' do cliente','').replace(' ao cliente',''):l.replace('E-mail ','')}</button>`).join('')}</div>
+  <textarea id="${px}mraw" class="mraw" placeholder="De: cliente@empresa.com&#10;Enviada em: 19/10/2026 14:12&#10;Para: sac@kalunga.com.br&#10;Assunto: ...&#10;&#10;Texto do e-mail...">${esc(raw)}</textarea>
+  <div class="mcount" id="${px}mcount">${ms.length?`<i class="fa fa-check"></i> ${ms.length} mensage${ms.length>1?'ns':'m'} reconhecida${ms.length>1?'s':''}${ms[0].assunto?` · assunto: <b>${esc(ms[0].assunto)}</b>`:''}`:''}</div></div>`}
+function bindMailForm(px,onDir,onRaw){document.querySelectorAll(`[data-mdir^="${px}|"]`).forEach(b=>b.onclick=()=>{onDir(b.dataset.mdir.split('|')[1]);document.querySelectorAll(`[data-mdir^="${px}|"]`).forEach(x=>x.setAttribute('aria-pressed',x===b))});
+ const ta=$(px+'mraw');if(!ta)return;ta.oninput=()=>{onRaw(ta.value);const ms=ta.value.trim()?parseEmail(ta.value):[];$(px+'mcount').innerHTML=ms.length?`<i class="fa fa-check"></i> ${ms.length} mensage${ms.length>1?'ns':'m'} reconhecida${ms.length>1?'s':''}${ms[0].assunto?` · assunto: <b>${esc(ms[0].assunto)}</b>`:''}`:''}}

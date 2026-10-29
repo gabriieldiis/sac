@@ -1,0 +1,56 @@
+/* ===== modo escuro "Kalunga noite": camadas com profundidade, sem buracos ===== */
+html.dark{--dk-page:#0d1319;--dk-surf:#16202a;--dk-raise:#1e2a36;--dk-line:#2b3b4b;--dk-txt:#e6ecf2;--dk-mut:#9fb2c4;--dk-brand:#15395a;--dk-brand-line:#2f6f9f;--dk-acc:#5aaee8}
+html.dark .content{color:var(--dk-txt)}
+html.dark .content .card{background:var(--dk-surf);border-color:var(--dk-line);box-shadow:0 1px 0 rgba(255,255,255,.03) inset,0 6px 18px rgba(0,0,0,.35)}
+html.dark .soft,html.dark .kv span,html.dark .ckv>span,html.dark .pfacts span,html.dark .itile span,html.dark .cgrid span,html.dark .op-st,html.dark .pend th,html.dark .cprod th,html.dark .ad-tb th{color:var(--dk-mut)}
+html.dark .op-t,html.dark .ccard h4{color:var(--dk-txt)}
+/* faixas azuis: deixam de "acender" e viram azul-noite com contorno */
+html.dark .phd,html.dark .hhead{background:var(--dk-brand);border:1px solid var(--dk-brand-line);color:#eaf3fb}
+html.dark .hhead{border-bottom:0}
+html.dark .phd .lbl{color:#b9d4ea;opacity:1}
+html.dark .hhead input{background-color:#0f2539;border-color:#2f5b80}
+/* caixas internas um degrau acima do cartão */
+html.dark .dbox,html.dark .hobs,html.dark .op-and,html.dark .modbar,html.dark .rci,html.dark .sritem,html.dark .pmrow{background-color:var(--dk-raise);border-color:var(--dk-line)}
+html.dark .op-sec{border-color:var(--dk-line)}
+html.dark .dbox b{color:var(--dk-txt)}html.dark .dbox span{color:#c5d2de}
+/* rastreio: amarelo Kalunga controlado, sem virar marrom */
+html.dark .dbox.track{background:#2a240f;border-color:#5a4a16;border-left-color:#f5b700}
+html.dark .dbox.track b{color:#ffd65c}html.dark .dbox.track span{color:#e2d3a4}html.dark .dbox.track>.fa{color:#f5b700}
+html.dark .dbox.track .gbtn.trk{background:#f5b700;border-color:#f5b700;color:#1d1600}
+html.dark .dbox.ok{background:#11281e;border-color:#1f5a3d;border-left-color:#2fbf71}html.dark .dbox.ok b{color:#7fe0aa}
+html.dark .dbox.late,html.dark .dbox.cancel,html.dark .dbox.furo{background:#2c1517;border-color:#6b2a2a;border-left-color:#e5534b}html.dark .dbox.late b,html.dark .dbox.cancel b,html.dark .dbox.furo b{color:#ff9c94}
+/* barra de ação fixa */
+html.dark .pactsec.stk{background:#18242f;border-top-color:#2fbf71;box-shadow:0 -10px 24px rgba(0,0,0,.55)}
+/* botões secundários visíveis no escuro */
+html.dark .lbtn{background:#1e2a36;border-color:#3a4d61;color:#dbe5ee}
+html.dark .lbtn:hover{background:#253444;border-color:#5aaee8}
+/* tabelas */
+html.dark .pend td{border-color:var(--dk-line)}html.dark .pend tbody tr:hover{background:#1c2834}
+/* painel: abas */
+html.dark .dtabs{border-bottom-color:var(--dk-line)}
+html.dark .dtabs button{color:var(--dk-mut)}html.dark .dtabs button:hover{background:var(--dk-raise);color:var(--dk-txt)}
+html.dark .dtabs button[aria-selected="true"]{background:var(--dk-surf);color:var(--dk-acc);border-bottom-color:var(--dk-acc)}
+html.dark .dsrc{background:#2a240f;color:#ffd65c;border-color:#5a4a16}
+html.dark .dchip{background:#15395a;border-color:#2f6f9f;color:#cfe4f5}
+html.dark .dnote-erp{background:#2a240f;border-color:#5a4a16;border-left-color:#f5b700;color:#e2d3a4}
+html.dark .dval>div{background:var(--dk-raise);border-color:var(--dk-line)}html.dark .dval .dv-main{background:#15395a;border-color:#2f6f9f}html.dark .dval .dv-main b{color:#cfe4f5}html.dark .dval span,html.dark .dval small{color:var(--dk-mut)}
+/* cabeçalhos, modais, sanfona, novo atendimento e fila */
+html.dark .pmeta{background:var(--dk-raise);border-top-color:var(--dk-line);color:#c5d2de}
+html.dark .mhd{background:var(--dk-brand);border:0;border-bottom:1px solid var(--dk-brand-line)}
+html.dark .pacc{background:var(--dk-surf);border-color:var(--dk-line)}
+html.dark .phd.lite{background:var(--dk-raise);color:var(--dk-txt);border:0}
+html.dark .pacc[open]>.phd.lite{background:var(--dk-brand);color:#eaf3fb}
+html.dark .content .card.novohero{background:#12241b;border-color:#2fbf71;box-shadow:0 8px 22px rgba(0,0,0,.4)}
+html.dark .nvh h2{color:#d9f5e5}html.dark .nvh p{color:#9fc7b0}
+html.dark .novohero .cb-in{background:#111a23;border-color:#2b6b47}
+html.dark .ffl th{background:var(--dk-raise);border-color:var(--dk-line)}
+html.dark .ffl input,html.dark .ffl select{background:#111a23;border-color:#34475a;color:var(--dk-txt)}
+html.dark .mhd.ok{background:#14532d;border-bottom-color:#2fbf71}
+/* ficha do pedido */
+html.dark .fc-top,html.dark .fc-cli,html.dark .fc-more,html.dark .fc-more details+details{border-color:var(--dk-line)}
+html.dark .fc-facts{background:var(--dk-raise);border-color:var(--dk-line)}
+html.dark .fc-f dd,html.dark .fc-ped b{color:var(--dk-txt)}html.dark .fc-f dt,html.dark .fc-ci small,html.dark .fc-st span{color:var(--dk-mut)}
+html.dark .fc-mod.m-cd{background:#15395a;color:#cfe4f5}html.dark .fc-mod.m-loja{background:#2e2140;color:#dcc8f2}html.dark .fc-mod.m-pick{background:#3a2a10;color:#f5d39a}
+html.dark .fc-st.t-bad b{color:#ff9c94}html.dark .fc-st.t-warn b{color:#ffd65c}html.dark .fc-st.t-good b{color:#7fe0aa}html.dark .fc-st.t-info b{color:#8cc6f0}
+html.dark .fc-more summary{color:var(--dk-txt)}
+html.dark .fc-tl{background:none;border:0}
