@@ -6,6 +6,6 @@ function mHead(id,icon,title,xAttr,tags){
 function mBox(o){return `<div class="pm-bg" ${o.xAttr}></div><div class="pm-box card mbox ${o.cls||''}" role="${o.role||'dialog'}" aria-modal="true" aria-labelledby="${o.labelledby}">${o.head}${o.band?`<div class="pwho mband">${o.band}</div>`:''}${o.body?`<div class="mbody">${o.body}</div>`:''}${o.foot?`<div class="pm-foot">${o.foot}</div>`:''}</div>`}
 
 /* protocolo em sanfona: fechado mostra o cabeçalho do resumo; aberto mostra cliente, pedido e os últimos registros */
-function pAccHTML(p,open){
- return `<details class="pacc"${open?' open':''}><summary class="phd lite"><span class="phd-t"><i class="fa fa-chevron-right pacc-ch" aria-hidden="true"></i><span class="lbl">Protocolo</span><b>${p.num}</b><span class="mt">${asIc(p.as,'sm')} ${esc(asTxt(p))} › ${esc(subTxt(p))}</span></span><span class="phtags">${ageTag(p,'sm')}${stPill(p)}<button type="button" class="gbtn sm" data-pmgo="${p.num}"><i class="fa fa-folder-open"></i> Abrir</button></span></summary>
+function pAccHTML(p,open,noBtn){
+ return `<details class="pacc"${open?' open':''}><summary class="phd lite"><span class="phd-t"><i class="fa fa-chevron-right pacc-ch" aria-hidden="true"></i><span class="lbl">Protocolo</span><b>${p.num}</b><span class="mt">${asIc(p.as,'sm')} ${esc(asTxt(p))} › ${esc(subTxt(p))}</span></span><span class="phtags">${ageTag(p,'sm')}${stPill(p)}${noBtn?'':`<button type="button" class="gbtn sm" data-pmgo="${p.num}"><i class="fa fa-folder-open"></i> Abrir</button>`}</span></summary>
   ${whoHTML(p)}<div class="phist">${histHTML(p,3)}</div></details>`}

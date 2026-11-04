@@ -33,7 +33,7 @@ function bindCombo(id,items,onPick,o){o=o||{};const w=$(id);if(!w)return;const i
   else if(e.key==='ArrowUp'){e.preventDefault();act=Math.max(0,act-1);draw()}
   else if(e.key==='Enter'){e.preventDefault();if(open&&res.length)pick(act)}
   else if(e.key==='Tab'&&q&&res.length){e.preventDefault();pick(act)}
-  else if(e.key===' '&&q&&res.length===1){e.preventDefault();pick(0)}
+
   else if(e.key==='Escape'){open=false;ul.hidden=true}});
  w.querySelector('.cb-c').onclick=()=>{inp.focus()}}
 

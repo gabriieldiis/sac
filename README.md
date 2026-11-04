@@ -2,7 +2,7 @@
 
 Protótipo navegável do novo SAC (atendimento, Pós-Venda, Assuntos e tópicos e Painel da diretoria). Abra o `index.html` direto no navegador. Não precisa de servidor nem de instalação.
 
-Todos os dados são fictícios.
+**Todos os dados são fictícios.**
 
 ## Estrutura
 

@@ -57,14 +57,13 @@ function renderFila(){const {all,f}=filaList(),C=FQ.c,sc=k=>all.filter(p=>stageO
  app.innerHTML=`<div class="fila">${novoCardHTML()}
   <div class="card sbig"><h2><i class="fa fa-folder-open-o" style="color:var(--head)"></i> Pesquisar atendimento</h2>
    ${searchBodyHTML()}</div>
-  <div class="kpis">${FSTS.map(([k,l])=>`<button type="button" class="kpi k-${k} ${(C.st||FQ.st)===k?'on':''}" data-fst="${k}" aria-pressed="${(C.st||FQ.st)===k}"><b>${sc(k)}</b><span>${l}</span></button>`).join('')}</div>
-  <div class="card fcard"><div class="fhead"><h2><i class="fa fa-inbox"></i> Protocolos remetidos ao Pós-Venda <span class="hcount2" id="fcount">${f.length} de ${all.length}</span></h2>
+  <div class="card fcard"><div class="fhead"><h2><i class="fa fa-inbox"></i> Protocolos remetidos ao Pós-Venda</h2>
    ${anyF?'<button type="button" class="lnk" data-fclr><i class="fa fa-times"></i> Limpar filtros</button>':''}</div>
    <div class="scroll"><table class="pend ftab"><thead><tr><th>Protocolo</th><th>Assunto</th><th>Cliente</th><th>Pedido</th><th>Remetido em</th><th>Situação</th><th>Último registro</th></tr>
     <tr class="ffl"><th>${ti('num','nº')}</th><th>${sel('as','Assunto',ases.map(a=>[a,a]))}</th><th>${ti('cli','nome ou CPF')}</th><th>${ti('ped','nº')}</th><th>${sel('rem','Quando',[['hoje','Hoje'],['7','Até 7 dias'],['mais7','Há mais de 7 dias']])}</th><th>${sel('st','Situação',FSTS)}</th><th>${ti('last','texto ou quem')}</th></tr></thead>
    <tbody id="ftb">${filaRowsHTML(f)}</tbody></table></div></div></div>`;
  bindCommon();bindNovoCard(renderFila);
- const upd=()=>{const r=filaList();$('ftb').innerHTML=filaRowsHTML(r.f);$('fcount').textContent=`${r.f.length} de ${r.all.length}`;bindRows()};
+ const upd=()=>{const r=filaList();$('ftb').innerHTML=filaRowsHTML(r.f);bindRows()};
  const bindRows=()=>{app.querySelectorAll('#ftb tr[data-open]').forEach(tr=>{tr.onclick=()=>go('proto',{p:tr.dataset.open});tr.onkeydown=e=>{if(e.key==='Enter')go('proto',{p:tr.dataset.open})}});
   app.querySelectorAll('[data-fclr]').forEach(b=>b.onclick=()=>{FQ.st='';Object.keys(C).forEach(k=>C[k]='');renderFila()})};
  app.querySelectorAll('input[data-fc]').forEach(i=>i.oninput=()=>{C[i.dataset.fc]=i.value;upd()});

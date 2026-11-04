@@ -9,7 +9,7 @@ function bindNovoCard(rr){bindCombo('cbas',asOn(),(a,sub)=>{N_SUBPRE=sub||'';sta
 function renderHome(){if(MODE==='pv')return renderFila();
  app.innerHTML=`<div class="sackhome">${novoCardHTML()}
   <div class="card sbig"><h2><i class="fa fa-folder-open-o" style="color:var(--head)"></i> Pesquisar atendimento</h2>
-   ${searchBodyHTML()}</div>${recentHTML()}</div>`;
+   ${searchBodyHTML()}</div>${testCardHTML()}</div>`;
  app.querySelectorAll('[data-as]').forEach(b=>b.onclick=()=>{N_SUBPRE='';startNovo(b.dataset.as)});
  bindNovoCard(renderHome);bindCommon();bindSearch(renderHome)}
 function recentHTML(){const k=p=>{const t=p.tram[p.tram.length-1]?.[0]||p.ab,[a,b]=t.split(' '),[d,m,y]=a.split('/');return y+m+d+(b||'')};

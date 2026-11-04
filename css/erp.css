@@ -3,7 +3,7 @@
 :root{
   color-scheme:light;
   --shell:#111111; --menu-active:#1e282c; --menu-edge:#3c8dbc; --menu-sub:#303030; --menu-fg:#ffffff; --menu-muted:#b8c7ce;
-  --page:#fafafa; --box:#ffffff; --border:#d6d6d6; --input:#d2d6de;
+  --page:#eceff2; --box:#ffffff; --border:#d6d6d6; --input:#d2d6de;
   --head:#2682bf; --green:#00a65a; --tag:#ffc000; --badge:#4e4d4c;
   --text:#333333; --text-2:#666666; --muted:#999999;
   --orange:#ff851b; --aqua:#00c0ef; --tgreen:#00a65a; --purple:#605ca8; --red:#dd4b39; --blue:#0073b7;

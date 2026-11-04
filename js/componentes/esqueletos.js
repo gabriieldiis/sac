@@ -41,3 +41,8 @@ function skToggle(key,force){const [id,i]=key.split('|'),ed=$(id);if(!ed)return;
 document.addEventListener('click',e=>{const b=e.target.closest('[data-sk]');if(b&&b.tagName==='BUTTON'){e.preventDefault();skToggle(b.dataset.sk)}
  const a=e.target.closest('[data-skall]');if(a){const id=a.dataset.skall;(SKI[id]||[]).forEach((_,i)=>skToggle(id+'|'+i,true))}});
 new MutationObserver(()=>document.querySelectorAll('[data-skfor]').forEach(r=>{if(!r._sk){r._sk=1;skRefresh(r.dataset.skfor)}})).observe(document.body,{childList:true,subtree:true});
+/* texto escrito pelo atendente, sem as frases prontas do esqueleto */
+const MIN_OWN=15;
+function ownTxt(html,id){const t=document.createElement('template');t.innerHTML=html||'';t.content.querySelectorAll('[data-sk]').forEach(e=>e.remove());
+ let s=' '+(t.content.textContent||'').replace(/\s+/g,' ')+' ';(SKI[id]||[]).forEach(p=>{const x=txtOf(p).replace(/\s+/g,' ').trim();if(x)s=s.split(x).join(' ')});return s.replace(/[\s.,;:·-]+/g,' ').trim()}
+const OWN_MSG='Escreva com suas palavras o que o cliente disse ou o que foi feito (mínimo 15 letras). Só as frases prontas não bastam.';

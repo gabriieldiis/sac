@@ -6,7 +6,7 @@ const DTABS=[
  ['geral','fa-dashboard','Visão geral',''],
  ['assuntos','fa-list-ol','Assuntos e tópicos',''],
  ['pedidos','fa-truck','Pedidos e entrega','erp'],
- ['produtos','fa-cube','Produtos e valores','erp'],
+ /* ['produtos','fa-cube','Produtos e valores','erp'],  (oculto por enquanto) */
  ['clientes','fa-user','Clientes',''],
  ['equipe','fa-users','Equipe',''],
  ['posvenda','fa-hourglass-half','Pós-Venda','']];
@@ -72,14 +72,14 @@ function dashTabsHTML(card){const t=DQ.tab||'geral',erp=DTABS.find(x=>x[0]===t)[
  const chips=fx.length?`<div class="dchips"><span class="soft">Filtrando por</span>${fx.map(([k,v])=>`<button type="button" class="dchip" data-fxx="${k}">${DFX[k]}: <b>${esc(lblFx(k,v))}</b> <i class="fa fa-times"></i></button>`).join('')}</div>`:'';
  const note=erp?`<div class="hint dnote-erp"><i class="fa fa-plug"></i><span>Estes números vêm do <b>pedido no ERP</b> e estão simulados no protótipo. No sistema real, o protocolo guarda o nº do pedido e o ERP precisa entregar: modalidade, transportadora, loja, estado de entrega, origem da compra, forma de pagamento, itens e valor.</span></div>`:'';
  const C={
-  geral:[card('dia','fa-line-chart','Protocolos por dia','Resolvidos no atendimento e remetidos ao Pós-Venda','','w2'),card('ca','fa-phone','Canais de contato','Por onde o cliente falou · clique para filtrar',''),card('as','fa-list-ol',DQ.as?'Tópicos mais abertos de '+esc(DQ.as):'Assuntos mais abertos',DQ.as?'Quantidade no período':'Clique num assunto para filtrar o painel inteiro',''),card('hm','fa-th','Quando os protocolos são abertos','Dia da semana × hora · quanto mais escuro, mais protocolos','','w2')],
-  assuntos:[card('as','fa-list-ol',DQ.as?'Tópicos mais abertos de '+esc(DQ.as):'Assuntos mais abertos',DQ.as?'Quantidade no período':'Clique num assunto para ver os tópicos dele',''),card('tas','fa-clock-o','Tempo para registrar por assunto','Média do assunto até o protocolo salvo · linha = média geral',''),card('ast','fa-sitemap','Assunto e tópico','Os pares mais registrados, com o quanto vai para o Pós-Venda','','w2'),card('rea','fa-repeat','Remetidos novamente por assunto','% dos remetidos em que o cliente voltou a reclamar',''),card('out','fa-pencil-square-o','O que foi escrito em "Outros"','Candidatos a virar assunto ou tópico novo','')],
+  geral:[card('ca','fa-phone','Canais de contato','Por onde o cliente falou · clique para filtrar',''),card('as','fa-list-ol',DQ.as?'Tópicos mais abertos de '+esc(DQ.as):'Assuntos mais abertos',DQ.as?'Quantidade no período':'Clique num assunto para filtrar o painel inteiro',''),card('hm','fa-th','Quando os protocolos são abertos','Dia da semana × hora · quanto mais escuro, mais protocolos','','w2'),card('dia','fa-line-chart','Protocolos por dia','Resolvidos no atendimento e remetidos ao Pós-Venda','','w2')],
+  assuntos:[card('as','fa-list-ol',DQ.as?'Tópicos mais abertos de '+esc(DQ.as):'Assuntos mais abertos',DQ.as?'Quantidade no período':'Clique num assunto para ver os tópicos dele',''),card('tas','fa-clock-o','Tempo para registrar por assunto','Média do assunto até o protocolo salvo · linha = média geral',''),card('ast','fa-sitemap','Assunto e tópico','O que mais está sendo falado: os pares de assunto e tópico mais registrados','','w2'),card('rea','fa-repeat','Remetidos novamente por assunto','% dos remetidos em que o cliente voltou a reclamar',''),card('out','fa-pencil-square-o','O que foi escrito em "Outros"','Candidatos a virar assunto ou tópico novo','')],
   pedidos:[card('mod','fa-random','Modalidade de entrega','CD, Super Expressa ou Retirada · clique para filtrar',''),card('car','fa-truck','Transportadoras','Protocolos com entrega pelo CD · clique para filtrar',''),card('carm','fa-exclamation-triangle','Motivo por transportadora','Quantos protocolos de cada tipo de problema cada transportadora gerou','','w2'),card('loja','fa-building','Lojas','Super Expressa e Retirada · clique para filtrar',''),card('uf','fa-map-marker','Estado de entrega','Onde estão os clientes que reclamam · clique para filtrar',''),card('orig','fa-shopping-cart','Origem da compra','Site, App, Televendas ou loja física',''),card('pag','fa-credit-card','Forma de pagamento','Como o pedido foi pago','')],
   produtos:[card('val','fa-money','Dinheiro envolvido','Estornos, cancelamentos, abatimentos e devoluções no período','','w2',true),card('cat','fa-tags','Categorias com mais protocolos','Clique para filtrar',''),card('prod','fa-cube','Produtos mais citados','Item principal do pedido do protocolo',''),card('tick','fa-shopping-basket','Valor dos pedidos com protocolo','Quantos protocolos por faixa de valor do pedido','','w2')],
   clientes:[card('tipo','fa-id-card-o','Pessoa física ou jurídica','Clique para filtrar',''),card('rein','fa-refresh','Clientes que voltaram','Quantos protocolos cada cliente abriu no período',''),card('topc','fa-user-plus','Clientes com mais protocolos','Quem mais procurou o SAC no período','','w2')],
   equipe:[card('at','fa-users','Atendentes','Quem registrou, quanto tempo levou e quanto foi para o Pós-Venda','','w2'),card('resp','fa-user-circle','Responsáveis no Pós-Venda','Concluídos, prazo médio e o que ainda está aberto','','w2')],
   posvenda:[card('pv','fa-hourglass-half','Quanto tempo o Pós-Venda leva para concluir','Protocolos concluídos no período · prazo de 7 dias (Decreto 11.034/2022)',''),card('age','fa-inbox','Em aberto agora, por idade','Protocolos ainda no Pós-Venda',''),card('pva','fa-tasks','Prazo médio no Pós-Venda por assunto','Linha = prazo de 7 dias','','w2')]}[t];
- return bar+chips+note+(t==='geral'?'%INS%':'')+`<div class="dgrid">${C.join('')}</div>`}
+ return bar+chips+note+`<div class="dgrid">${C.join('')}</div>`}
 
 /* ---------- desenho de cada cartão ---------- */
 function dashDraws(cur,prev,K,from,to){const w=r=>r.filter(x=>x.mod);
@@ -102,23 +102,27 @@ function drawDim(key,cur,prev,o){o=o||{};const box=$('db-'+key),L=o.lbl||(v=>v),
  if(DQ.tbl[key]){box.innerHTML=tblHTML([DFX[key]||'Item','Protocolos','% do total','Período anterior','% remetidos','Prazo médio no Pós-Venda'],it.map(x=>[esc(x.label),nf(x.v),x.s,nf(x.p),pf(x.rem),x.pv?df(x.pv):'—']));return}
  const top=it.slice(0,10),rest=it.slice(10);if(rest.length)top.push({label:`Demais ${rest.length}`,v:rest.reduce((a,x)=>a+x.v,0),s:pf(rest.reduce((a,x)=>a+x.v,0)/n),other:true});
  top.forEach(x=>x.tip=[['','protocolos',nf(x.v)],['','do total',x.s],...(x.other?[]:[['','remetidos ao Pós-Venda',pf(x.rem)],['','no período anterior',nf(x.p)]])]);
- hbars(box,top,{click:DFX[key]?x=>{DQ.fx=Object.assign({},DQ.fx,{[key]:x.k});renderDash()}:null})}
+ hbars(box,top,{cid:key,click:DFX[key]?x=>{DQ.fx=Object.assign({},DQ.fx,{[key]:x.k});renderDash()}:null})}
 
 /* assunto × tópico */
 function drawAst(cur){const box=$('db-ast'),g=grp(cur,x=>x.as+'|'+x.sub),n=cur.length||1;
- const it=[...g].map(([k,r])=>{const [a,s]=k.split('|');return {a,s,v:r.length,rem:r.filter(x=>x.rem).length/r.length,t:r.reduce((q,x)=>q+x.t,0)/r.length}}).sort((x,y)=>y.v-x.v).slice(0,DQ.tbl.ast?60:15);
- const mx=Math.max(1,...it.map(x=>x.v));
- box.innerHTML=`<div class="scroll"><table class="tb dtb"><thead><tr><th>Assunto</th><th>Tópico</th><th>Protocolos</th><th>% do total</th><th>% remetidos</th><th>Tempo para registrar</th></tr></thead><tbody>${it.map(x=>`<tr><td>${esc(x.a)}</td><td><b>${esc(x.s)}</b></td><td><span class="ib"><span style="width:${(x.v/mx*100).toFixed(1)}%"></span></span><span class="num">${nf(x.v)}</span></td><td class="num">${pf(x.v/n,1)}</td><td class="num">${pf(x.rem)}</td><td class="num">${tf(x.t)}</td></tr>`).join('')}</tbody></table></div><p class="dnote">${DQ.tbl.ast?'Mostrando até 60 pares.':'Mostrando os 15 pares mais registrados. Use "Tabela" para ver mais.'}</p>`}
+ const all=[...g].map(([k,r])=>{const [a,s]=k.split('|');return {k,a,s,label:a+' › '+s,v:r.length,rem:r.filter(x=>x.rem).length/r.length,t:r.reduce((q,x)=>q+x.t,0)/r.length}}).sort((x,y)=>y.v-x.v);
+ if(DQ.tbl.ast){const it=all.slice(0,60),mx=Math.max(1,...it.map(x=>x.v));
+  box.innerHTML=`<div class="scroll"><table class="tb dtb"><thead><tr><th>Assunto</th><th>Tópico</th><th>Protocolos</th><th>% do total</th><th>% remetidos</th><th>Tempo para registrar</th></tr></thead><tbody>${it.map(x=>`<tr><td>${esc(x.a)}</td><td><b>${esc(x.s)}</b></td><td><span class="ib"><span style="width:${(x.v/mx*100).toFixed(1)}%"></span></span><span class="num">${nf(x.v)}</span></td><td class="num">${pf(x.v/n,1)}</td><td class="num">${pf(x.rem)}</td><td class="num">${tf(x.t)}</td></tr>`).join('')}</tbody></table></div><p class="dnote">${DQ.tbl.ast?'Mostrando até 60 pares.':'Mostrando os 15 pares mais registrados. Use "Tabela" para ver mais.'}</p>`;return}
+ const top=all.slice(0,15),rest=all.slice(15);
+ top.forEach(x=>{const tp=x.s;x.s=pf(x.v/n,1);x.tip=x.other?[['','protocolos',nf(x.v)]]:[['','assunto',x.a],['','tópico',tp],['','protocolos',nf(x.v)],['','do total',x.s],['','remetidos ao Pós-Venda',pf(x.rem)],['','tempo para registrar',tf(x.t)]]});
+ hbars(box,top,{cid:'ast',click:x=>{DQ.as=x.a;renderDash()}});
+ box.insertAdjacentHTML('beforeend',`<p class="dnote">Os 15 pares mais registrados${rest.length?` (outros ${rest.length} pares somam ${nf(rest.reduce((a,x)=>a+x.v,0))} protocolos)`:''}. Clique num par para filtrar o painel pelo assunto. Use "Tabela" para ver mais.</p>`)}
 function drawRea(cur){const box=$('db-rea'),g=grp(cur.filter(x=>x.rem),'as');
  let it=[...g].filter(([,r])=>r.length>=8).map(([k,r])=>({label:k,v:r.filter(x=>x.re).length/r.length,n:r.length})).sort((a,b)=>b.v-a.v);
  if(DQ.tbl.rea){box.innerHTML=tblHTML(['Assunto','% remetidos novamente','Remetidos'],it.map(x=>[esc(x.label),pf(x.v,1),nf(x.n)]));return}
  if(!it.length){box.innerHTML='<p class="soft">Poucos remetidos para comparar.</p>';return}
- it=it.slice(0,10);it.forEach(x=>x.tip=[['','voltaram a reclamar',pf(x.v,1)],['','remetidos no período',nf(x.n)]]);hbars(box,it,{fmt:v=>pf(v,1)})}
+ it=it.slice(0,10);it.forEach(x=>x.tip=[['','voltaram a reclamar',pf(x.v,1)],['','remetidos no período',nf(x.n)]]);hbars(box,it,{cid:'rea',fmt:v=>pf(v,1)})}
 function drawOut(cur){const box=$('db-out'),r=cur.filter(x=>x.outTxt),g=grp(r,'outTxt');
  const it=[...g].map(([k,a])=>({label:k,v:a.length})).sort((a,b)=>b.v-a.v);
  if(!it.length){box.innerHTML='<p class="soft">Nenhum atendimento como "Outros" no período.</p>';return}
  if(DQ.tbl.out){box.innerHTML=tblHTML(['Texto escrito pelo atendente','Vezes'],it.map(x=>[esc(x.label),nf(x.v)]));return}
- it.forEach(x=>x.tip=[['','vezes no período',nf(x.v)]]);hbars(box,it.slice(0,10));
+ it.forEach(x=>x.tip=[['','vezes no período',nf(x.v)]]);hbars(box,it.slice(0,10),{cid:'out'});
  box.insertAdjacentHTML('beforeend','<p class="dnote">Textos repetidos com frequência devem virar assunto ou tópico em <button type="button" class="lnk" data-goadm>Assuntos e tópicos</button>.</p>');
  box.querySelectorAll('[data-goadm]').forEach(b=>b.onclick=()=>go('adm'))}
 
@@ -142,7 +146,7 @@ function drawProd(cur){const box=$('db-prod'),r=cur.filter(x=>x.prod),g=grp(r,'p
  const it=[...g].map(([k,a])=>{const ga=grp(a,'as'),top=[...ga].sort((x,y)=>y[1].length-x[1].length)[0];return {label:k,cat:a[0].cat,v:a.length,top:top?top[0]:'',val:a.reduce((q,x)=>q+(x.mon||0),0)}}).sort((a,b)=>b.v-a.v);
  if(!it.length){box.innerHTML='<p class="soft">Nenhum protocolo com pedido neste filtro.</p>';return}
  if(DQ.tbl.prod){box.innerHTML=tblN(['Produto','Categoria','Protocolos','Assunto mais comum','Dinheiro envolvido'],it.map(x=>[esc(x.label),esc(x.cat),nf(x.v),esc(x.top),money2(x.val)]),[2,4]);return}
- const top=it.slice(0,10);top.forEach(x=>x.tip=[['','protocolos',nf(x.v)],['','categoria',x.cat],['','assunto mais comum',x.top],['','dinheiro envolvido',money2(x.val)]]);hbars(box,top)}
+ const top=it.slice(0,10);top.forEach(x=>x.tip=[['','protocolos',nf(x.v)],['','categoria',x.cat],['','assunto mais comum',x.top],['','dinheiro envolvido',money2(x.val)]]);hbars(box,top,{cid:'prod'})}
 function drawTick(cur){const box=$('db-tick'),r=cur.filter(x=>x.val),B=[[0,50,'até R$ 50'],[50,100,'R$ 50–100'],[100,250,'R$ 100–250'],[250,500,'R$ 250–500'],[500,1000,'R$ 500–1 mil'],[1000,3000,'R$ 1–3 mil'],[3000,1e12,'acima de R$ 3 mil']];
  const it=B.map(([a,b,l])=>({l,v:r.filter(x=>x.val>a&&x.val<=b).length,rem:(()=>{const q=r.filter(x=>x.val>a&&x.val<=b);return q.length?q.filter(x=>x.rem).length/q.length:0})()}));
  if(DQ.tbl.tick){box.innerHTML=tblHTML(['Valor do pedido','Protocolos','% remetidos'],it.map(x=>[x.l,nf(x.v),pf(x.rem)]));return}
@@ -175,7 +179,7 @@ function drawPva(cur){const box=$('db-pva'),g=grp(cur.filter(x=>x.pv!==null),'as
  if(DQ.tbl.pva){box.innerHTML=tblHTML(['Assunto','Prazo médio','Concluídos','Em até 7 dias'],it.map(x=>[esc(x.label),df(x.v),nf(x.n),pf(x.in7)]));return}
  if(!it.length){box.innerHTML='<p class="soft">Poucos protocolos concluídos para comparar.</p>';return}
  it=it.slice(0,12);it.forEach(x=>x.tip=[['','prazo médio',df(x.v)],['','concluídos',nf(x.n)],['','em até 7 dias',pf(x.in7)]]);
- hbars(box,it,{fmt:df,ref:7,refLbl:'prazo: 7 dias'})}
+ hbars(box,it,{cid:'pva',fmt:df,ref:7,refLbl:'prazo: 7 dias'})}
 
 /* barras verticais genéricas (mk = índice depois do qual entra a linha de prazo) */
 function vbars(box,it,mk){const mx=Math.max(...it.map(x=>x.v),1);

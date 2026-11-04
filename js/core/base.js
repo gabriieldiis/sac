@@ -84,7 +84,7 @@ const maskDoc=d=>d;
 function delayLvl(o){return o.atraso?(o.atraso[0]==='red'?2:1):0}
 function delayTag(o){if(!o.atraso)return '';const [l,d]=o.atraso;return `<span class="pill ${l==='red'?'dred':'damber'}"><i class="fa fa-clock-o"></i> Pedido atrasado há ${d} dia${d>1?'s':''}</span>`}
 
-const TY={rem:['Remetido ao Pós-Venda','#e67e22'],cli:['Contato do cliente','#0073b7'],env:['Pós-Venda acionou','#605ca8'],ret:['Retorno do responsável','#00a65a'],int:['Nota interna','#777'],sis:['Sistema','#f39c12'],fim:['Encerramento','#111']};
+const TY={rem:['Remetido ao Pós-Venda','#e67e22'],cli:['Contato do cliente','#0073b7'],env:['Pós-Venda acionou','#605ca8'],ret:['Retorno do responsável','#00a65a'],int:['Nota interna','#777'],sis:['Sistema','#f39c12'],fim:['Encerramento','#0d8a4a']};
 function histHTML(p,limit){const L=p.tram.slice().reverse(),shown=limit?L.slice(0,limit):L;
  return `<ul class="hist">${shown.map(([d,q,t,c,x])=>`<li><div class="av" style="background:${TY[t][1]}">${esc(q[0])}</div><div class="bub"><div class="meta"><span class="ty" style="background:${TY[t][1]}">${TY[t][0]}</span><b>${esc(q)}</b><span>${d}</span><span>via ${esc(c)}</span></div>${esc(x)}</div></li>`).join('')}</ul>`}
 

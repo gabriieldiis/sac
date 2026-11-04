@@ -1,8 +1,7 @@
 /* Tela de carregamento e esqueleto de loading. */
 /* ================= carregamento ================= */
 const FAST=!!window.SAC_FAST;let NOSK=false;
-function splash(){if(FAST)return;const c=document.querySelector('.content'),r=c.getBoundingClientRect(),d=document.createElement('div');d.className='splash';d.setAttribute('role','status');d.setAttribute('aria-live','polite');
- d.style.left=r.left+'px';
+function splash(){if(FAST)return;const d=document.createElement('div');d.className='splash';d.setAttribute('role','status');d.setAttribute('aria-live','polite');
  d.innerHTML=`<div class="spl-in"><div class="spl-ring"><span class="spl-ic"><i class="fa fa-headphones"></i></span></div><b class="spl-t">SAC <span>Kalunga</span></b><span class="spl-s" id="spls">Conectando ao ERP…</span><div class="spl-bar"><i></i></div></div>`;
  document.body.appendChild(d);const msgs=['Conectando ao ERP…','Carregando assuntos…','Buscando protocolos…','Pronto!'];let i=0;const iv=setInterval(()=>{i=Math.min(msgs.length-1,i+1);const e=$('spls');e&&(e.textContent=msgs[i])},320);
  setTimeout(()=>{clearInterval(iv);d.classList.add('out');setTimeout(()=>d.remove(),450)},1250)}

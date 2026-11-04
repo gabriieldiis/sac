@@ -18,7 +18,9 @@ PROTOS.forEach(p=>{if(p.status==='Resolvido no atendimento')p.status='Finalizado
 /* sem prazo de entrega: o ERP não tem o prazo que o cliente vê no site → sempre o rastreio */
 Object.values(ORDERS).forEach(o=>{delete o.atraso;delete o.deveria});
 /* esqueleto em grupos, com mais espaço */
-function skGroups(id,lockRes){const G=[['cli','O que o cliente disse','fa-comment-o'],...(lockRes?[]:[['pv','Se for remeter ao Pós-Venda','fa-share']]),['sol','Se for finalizar','fa-check-circle']];
+function skGroups(id,lockRes,ctx){let G=[['cli','O que o cliente disse','fa-comment-o'],...(lockRes?[]:[['pv','Se for remeter ao Pós-Venda','fa-share']]),['sol','Se for finalizar','fa-check-circle']];
+ if(ctx){G=G.filter(g=>ctx.keys.includes(g[0])).map(g=>ctx.keys.length===3?g:g[0]==='pv'?[g[0],'O que o Pós-Venda precisa fazer',g[2]]:g[0]==='sol'?[g[0],'O que foi feito',g[2]]:g)}
+ const skItems=k=>ctx?skItemsFor(ctx.as,ctx.sub,ctx.ped,ctx.canal,k):(N&&N.sub?skItemsFor(N.as,N.sub,N.ped,N.canal,k):[]);
  const all=[];const parts=G.map(([k,l,ic])=>{const it=skItems(k);const st=all.length;all.push(...it);return it.length?`<div class="skg sk-${k}"><span class="skg-t"><i class="fa ${ic}"></i> ${l}</span><div class="skchips">${it.map((t,i)=>`<button type="button" class="skc" data-sk="${id}|${st+i}" aria-pressed="false"><i class="fa fa-plus"></i> ${esc(txtOf(t))}</button>`).join('')}</div></div>`:''}).join('');
  SKI[id]=all;if(!all.length)return '';
  return `<div class="skrow big" data-skfor="${id}"><span class="sklab"><i class="fa fa-magic"></i> Esqueleto deste caso <span class="soft">· clique nas frases que fazem sentido: elas entram direto no texto</span></span>${parts}</div>`}

@@ -5,7 +5,7 @@ function startNovo(as,keepCli){OUT.as=null;OUT.sub=null;const T0=Date.now();if(t
 function autoPed(){const a=AS[N.as];if(a.p==='n'){N.ped='';return}const os=N.cli?ordersOf(N.cli):[];if(!os.length&&a.p==='o')N.ped=''}
 function cliDone(){return !!(N.cli||N.cliNovo)}
 function pedDone(){return N.ped!==null}
-function renderNovo(){const a=AS[N.as];let h=`<button type="button" class="backlink" data-home><i class="fa fa-times"></i> Cancelar atendimento</button>`;
+function renderNovo(){const a=AS[N.as];let h=`<button type="button" class="backlink" data-home><i class="fa fa-arrow-left"></i> Voltar para outra consulta</button>`;
  // 1 assunto
  h+=`<div class="card nsec done keep"><div class="nh"><span class="nn"><i class="fa fa-check"></i></span> Assunto do atendimento</div><div class="nb">${N.chgAs?`${comboHTML('cbas2','Digite ou escolha o novo assunto… o cliente e o pedido continuam')}<button type="button" class="lnk" id="chgasno" style="align-self:flex-start;margin-top:6px">Manter ${esc(N.as)}</button>`:lockHTML('as',N.as,ASI[N.as],ASC[AS[N.as].p],ASM[AS[N.as].p],'Ao alterar o assunto, o cliente e o pedido continuam. O tópico e o registro serão refeitos.')}${isOutAs(N.as)?outHTML('as','a'):''}</div></div>`;
  if(isOutAs(N.as)&&!outVal('as')){app.innerHTML=`<div class="nflow1">${h}</div>`;bindNovo();setTimeout(()=>$('out_as')?.focus(),20);return}
@@ -14,14 +14,14 @@ function renderNovo(){const a=AS[N.as];let h=`<button type="button" class="backl
    <form id="cform" class="sform"><input id="cq" value="${esc(N.q)}" placeholder="${a.p==='n'?'CPF ou CNPJ do cliente':'CPF/CNPJ ou nº do pedido'}" aria-label="CPF, CNPJ ou pedido" autocomplete="off" inputmode="numeric"><button type="submit" class="gbtn"><i class="fa fa-search"></i> Buscar</button></form>
    ${N.msg?`<div class="err">${N.msg}</div>`:''}
    ${N.unk?`<div class="newcli"><div class="hint amber"><i class="fa fa-user-plus"></i><span>${N.unk.length===11?'CPF':'CNPJ'} <b>${fmtDoc(N.unk)}</b> não está na base. Informe o nome para registrar o protocolo.</span></div>
-     <label class="f2"><span>${N.unk.length===11?'Nome do cliente':'Razão social'} <span class="req">*</span></span><input type="text" id="nn" autocomplete="off"></label>
-     <label class="f2"><span>Telefone ou e-mail <span class="soft" style="font-weight:400">(opcional)</span></span><input type="text" id="nt" autocomplete="off"></label>
+     <div class="nc-f"><label class="f2"><span>${N.unk.length===11?'Nome do cliente':'Razão social'} <span class="req">*</span></span><input type="text" id="nn" autocomplete="off"></label>
+     <label class="f2"><span>Telefone ou e-mail <span class="soft" style="font-weight:400">(opcional)</span></span><input type="text" id="nt" autocomplete="off"></label></div>
      <button type="button" class="gbtn" id="nok" style="align-self:flex-start">Continuar</button></div>`:''}</div></div>`;
   app.innerHTML=`<div class="nflow1">${h}</div>`;bindNovo();setTimeout(()=>($('nn')||$('cq'))?.focus(),20);return}
  const c=N.cli?CLIENTES[N.cli]:N.cliNovo,openPs=PROTOS.filter(p=>isOpen(p)&&(N.cli?p.cli===N.cli:false));
- {const oth=openPs.filter(p=>!(N.ped&&p.ped===N.ped&&p.rem));if(oth.length)h+=othBarHTML(oth,N.ped)}
+ {const oth=openPs.filter(p=>!(N.ped&&p.ped===N.ped&&p.rem));if(oth.length)h+=othListHTML(oth,N.ped,c&&c.nome)}
  let n=3,B='';
- const out=()=>{pedCheck(openPs);app.innerHTML=`<div class="nlay"><div class="nA">${h}</div>${SPLIT}<div class="nS">${sidePanelHTML(c,N.ped||null,{noAnd:true,chgCli:'chgCli',novo:!!N.cliNovo,noPed:a.p==='n'?'':N.ped===''?'Atendimento sem pedido vinculado.':N.ped===null?'Escolha o pedido na lista.':''})}</div><div class="nB">${B}</div></div>`;stickTop();bindSplit();bindNovo()};
+ const out=()=>{pedCheck(openPs);app.innerHTML=`<div class="nlay"><div class="nA">${h}</div>${SPLIT}<div class="nS">${sidePanelHTML(c,N.ped||null,{noAnd:true,step:document.documentElement.classList.contains('one')&&!!N.ped,chgPed:document.documentElement.classList.contains('one')?'chgPed':'',novo:!!N.cliNovo,noPed:a.p==='n'?'':N.ped===''?'Atendimento sem pedido vinculado.':N.ped===null?'Escolha o pedido na lista.':''})}</div><div class="nB">${B}</div></div>`;stickTop();bindSplit();bindNovo()};
  // 3 pedido
  if(a.p!=='n'){
   if(!pedDone()){const os=ordersOf(N.cli||'');
@@ -29,7 +29,7 @@ function renderNovo(){const a=AS[N.as];let h=`<button type="button" class="backl
     ${os.length?`<div class="pedpick">${os.map(k=>pedPickHTML(k)).join('')}</div>`:`<div class="hint ${a.p==='x'?'red':''}"><i class="fa fa-info-circle"></i><span>Nenhum pedido encontrado para este cliente.${a.p==='x'?' Este assunto precisa de um pedido: confira o CPF/CNPJ ou busque pelo nº do pedido.':''}</span></div>`}
     ${a.p==='o'?`<button type="button" class="lbtn" id="semped" style="align-self:flex-start"><i class="fa fa-ban"></i> Atendimento sem pedido vinculado</button>`:''}</div></div>`;
    return out()}
-  h+=sec(n,'Pedido',true,N.ped?`<b>#${N.ped}</b> ${modBadge(ORDERS[N.ped],1)} <span class="soft" style="font-weight:400">· ${document.documentElement.classList.contains('one')?'mais detalhes logo abaixo':'mais detalhes no painel'}</span>`:'<span class="soft">Sem pedido vinculado</span>','chgPed',N.ped?`<div class="op-and ped-and"><span class="op-st">Andamento do pedido</span>${vtlHTML(ORDERS[N.ped])}</div>`:'');n++}
+  if(document.documentElement.classList.contains('one')&&N.ped){}else h+=sec(n,'Pedido',true,N.ped?`<b>#${N.ped}</b> ${modBadge(ORDERS[N.ped],1)} <span class="soft" style="font-weight:400">· ${document.documentElement.classList.contains('one')?'mais detalhes logo abaixo':'mais detalhes no painel'}</span>`:'<span class="soft">Sem pedido vinculado</span>','chgPed',N.ped?`<div class="op-and ped-and"><span class="op-st">Andamento do pedido</span>${vtlHTML(ORDERS[N.ped])}</div>`:'');n++}
  // regra da forma de entrega
  if(N.ped&&!N.sub){const rl=ruleFor(N.as,null,N.ped);if(rl&&!N.ruleSkip)B+=ruleCardHTML(rl,ORDERS[N.ped])}
  // 4 sub-assunto
@@ -47,8 +47,8 @@ function renderNovo(){const a=AS[N.as];let h=`<button type="button" class="backl
   <div class="f2 regf"><span>Registro do atendimento <span class="req">*</span></span>${skGroups('frel',lockRes)}${rte('frel',N.rel,'O que o cliente disse e o que foi feito.')}</div>
   ${N.err?`<div class="err"><i class="fa fa-exclamation-circle"></i> ${N.err}</div>`:''}
   <div class="regact"><span class="ra-q">Protocolo pronto? Escolha como ele fica:</span><div class="ra-btns">
-   <button type="button" class="ra-b ra-fin" data-reg="res"><i class="fa fa-check-circle"></i><span><b>Finalizar</b><small>resolvido no atendimento</small></span></button>
-   ${lockRes?`<span class="ra-lock"><i class="fa fa-lock"></i> Para este pedido o caso é resolvido no atendimento: ${esc(rl5.short||'orientar o cliente')}.</span>`:`<button type="button" class="ra-b ra-rem" data-reg="rem"><i class="fa fa-share"></i><span><b>Remeter ao Pós-Venda</b><small>o Pós-Venda continua o caso</small></span></button>`}</div></div></div></div>`;
+   ${lockRes?`<span class="ra-lock"><i class="fa fa-lock"></i> Para este pedido o caso é resolvido no atendimento: ${esc(rl5.short||'orientar o cliente')}.</span>`:`<button type="button" class="ra-b ra-rem" data-reg="rem"><i class="fa fa-share"></i><span><b>Remeter ao Pós-Venda</b><small>o Pós-Venda continua o caso</small></span></button>`}
+   <button type="button" class="ra-b ra-fin" data-reg="res"><i class="fa fa-check-circle"></i><span><b>Finalizar</b><small>resolvido no atendimento</small></span></button></div></div></div></div>`;
  out()}
 function pedPickHTML(k){const o=ORDERS[k],op=protosOf(k).filter(isOpen).length;
  return `<button type="button" class="pedrow" data-ped="${k}"><span class="pr-ic m-${o.mod}"><i class="fa ${(MODB[o.mod]||MODB.cd)[1]}"></i></span>
@@ -61,7 +61,7 @@ function extraHTML(){return `<div class="xbox"><div class="xh"><b>Assuntos deste
   <div class="xadd">${N.xas?`<span class="trat main" style="flex:none"><i class="fa ${ASI[N.xas]}"></i> ${esc(N.xas)} <button type="button" class="xrm" id="xasx" aria-label="Trocar assunto"><i class="fa fa-times"></i></button></span>`:`<div style="flex:1 1 260px">${comboHTML('cbx','+ Outro assunto deste pedido… digite ou escolha')}</div>`}
   <select id="xsub" aria-label="Sub-assunto" ${N.xas?'':'disabled'}><option value="">Sub-assunto…</option>${N.xas?AS[N.xas].s.map(([t])=>`<option>${esc(t)}</option>`).join(''):''}</select>
   <button type="button" class="lbtn sm" id="xadd" ${N.xas?'':'disabled'}><i class="fa fa-plus"></i> Adicionar</button></div></div>`}
-function sec(n,t,done,val,chg,extra){return `<div class="card nsec done"><div class="nh"><span class="nn"><i class="fa fa-check"></i></span> ${t}: <span class="nv">${val}</span> <button type="button" class="lnk chg" data-chg="${chg}">Alterar</button></div>${extra?`<div class="nb" style="padding-top:0">${extra}</div>`:''}</div>`}
+function sec(n,t,done,val,chg,extra){return `<div class="card nsec done"><div class="nh"><span class="nn"><i class="fa fa-check"></i></span> ${t}: <span class="nv">${val}</span> <button type="button" class="lnk chg" data-chg="${chg}">Alterar ${t.toLowerCase()}</button></div>${extra?`<div class="nb" style="padding-top:0">${extra}</div>`:''}</div>`}
 function setSub(t){N.sub=t;N.fin='';const s=AS[N.as].s.find(x=>x[0]===t);N.route='res';const rl=ruleFor(N.as,t,N.ped);N.rel='';if(rl&&rl.lvl==='nores'){N.route='res';N.rel=`<div><b>Orientação:</b> ${esc(rl.sol)}</div><div><br></div>`}}
 function changeAs(x){if(x===N.as)return;N.ruleSkip=false;N.as=x;N.sub=null;N.extra=[];N.xas='';N.err='';const p=AS[x].p;
  if(p==='n')N.ped='';else if(N.ped===''&&p==='x')N.ped=null;else if(N.ped===null&&cliDone())autoPed();
@@ -109,19 +109,21 @@ function registrar(){const rem=N.route==='rem',m=[];const nm=CANAIS[N.canal]==='
   asOut:isOutAs(N.as)?outVal('as'):'',tReg:Math.max(1,Math.round((Date.now()-(N.t0||Date.now()))/1000)),subOut:isOutSub(N.sub)?outVal('sub'):'',trats:[{as:N.as,sub:N.sub,st:rem?'Aberta':'Concluída'}],
   fin:N.fin||'',
   tram:[regEntry(t,'Você',canal,clean(N.rel),N.fin||'',rem,'',nm)]};
- PROTOS.push(p);if(rem)return go('proto',{p:p.num,novo:true});const keep={cli:p.cli,cliNovo:p.cliNovo};N=null;go('home');finModalOk(p,keep)}
+ PROTOS.push(p);N=null;go('home');doneModal(p,rem?'rem':'fin')}
 function cliMsg(p){return p.rem?`Seu protocolo é ${p.num}. Sua solicitação foi encaminhada para a nossa equipe de Pós-Venda, que vai tratar ${p.ped?'com o responsável pelo seu pedido':'do seu caso'}. O retorno sai em até 72 horas úteis.`:`Seu protocolo é ${p.num}. Seu atendimento foi registrado e finalizado.`}
 
 /* protocolo finalizado no atendimento: só o número e o próximo passo; os detalhes ficam para quando alguém pesquisar o protocolo */
-function finModalOk(p,keep){let m=$('okm');if(!m){m=document.createElement('div');m.id='okm';m.className='pmodal';document.body.appendChild(m)}
- m.innerHTML=mBox({xAttr:'data-okx',labelledby:'okmt',cls:'okbox2',head:mHead('okmt','fa-check',`Protocolo ${p.num} finalizado`,'data-okx',`<button type="button" class="lbtn sm okcp" data-cpn="${p.num}"><i class="fa fa-copy"></i> Copiar nº</button>`).replace('phd mhd','phd mhd ok'),
+/* depois de qualquer registro: confirma e deixa o atendente no início, pronto para o próximo */
+const DONE={fin:['fa-check','finalizado','ok'],rem:['fa-share','remetido ao Pós-Venda','rem'],tram:['fa-check','registro salvo','ok'],enc:['fa-check','encerrado','ok']};
+function doneModal(p,kind){const d=DONE[kind]||DONE.tram;finModalOk(p,{cli:p.cli,cliNovo:p.cliNovo},d)}
+function finModalOk(p,keep,d){d=d||DONE.fin;let m=$('okm');if(!m){m=document.createElement('div');m.id='okm';m.className='pmodal';document.body.appendChild(m)}
+ m.innerHTML=mBox({xAttr:'data-okx',labelledby:'okmt',cls:'okbox2',head:mHead('okmt',d[0],`Protocolo ${p.num} ${d[1]}`,'data-okx',`<button type="button" class="lbtn sm okcp" data-cpn="${p.num}"><i class="fa fa-copy"></i> Copiar nº</button>`).replace('phd mhd','phd mhd '+d[2]),
   body:pAccHTML(p,false),
-  foot:`<button type="button" class="lnk" id="okmesmo"><i class="fa fa-user"></i> Outro assunto, mesmo cliente</button><button type="button" class="gbtn big" id="oknovo"><i class="fa fa-plus"></i> Novo atendimento</button>`});
+  foot:`<button type="button" class="gbtn big" id="oknovo"><i class="fa fa-plus"></i> Novo atendimento</button>`});
  m.querySelector('[data-pmgo]')?.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();m.style.display='none';document.body.style.overflow='';go('proto',{p:p.num})});
  m.style.display='block';document.body.style.overflow='hidden';
  const close=()=>{m.style.display='none';document.body.style.overflow=''};m._close=close;
  m.querySelectorAll('[data-okx]').forEach(b=>b.onclick=()=>{close();setTimeout(()=>$('cbas')?.querySelector('input')?.focus(),30)});
  m.querySelectorAll('[data-cpn]').forEach(b=>b.onclick=()=>copyTxt(b.dataset.cpn,'Número copiado'));
  $('oknovo').onclick=()=>{close();S.keep=null;go('home');setTimeout(()=>$('cbas')?.querySelector('input')?.focus(),30)};
- $('okmesmo').onclick=()=>{close();go('home',{keep});setTimeout(()=>$('cbas')?.querySelector('input')?.focus(),30);toast('Escolha o assunto: o cliente já vem preenchido')};
  m.onkeydown=e=>{if(e.key==='Escape')close()};setTimeout(()=>$('oknovo').focus(),40)}

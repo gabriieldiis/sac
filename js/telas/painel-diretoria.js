@@ -54,7 +54,7 @@ function renderDash(){const all=dsAll(),to=DQ.d2,from=DQ.d1-1,LEN=DQ.d2-DQ.d1+1,
   ['fa-repeat','Remetidos novamente',pf(K.re,1),dl(K.re,P.re,'down',ppD),'cliente voltou a reclamar'],
   ['fa-inbox','Em aberto no Pós-Venda',nf(K.open),'',`<b class="${K.late?'st-bad':'st-ok'}"><i class="fa ${K.late?'fa-exclamation-triangle':'fa-check'}"></i> ${nf(K.late)} com mais de 7 dias</b>`],
   ['fa-pencil-square-o','Abertos como "Outros"',pf(K.out,1),dl(K.out,P.out,'down',ppD),'<button type="button" class="lnk" data-goadm>abrir Assuntos e tópicos</button>']];
- const card=(id,ic,t,sub,body,wide,noTbl)=>`<section class="card dc ${wide||''}" id="dc-${id}"><div class="dc-h"><div><h3><i class="fa ${ic}"></i> ${t}</h3>${sub?`<p>${sub}</p>`:''}</div>${noTbl?'':`<button type="button" class="lbtn sm" data-tbl="${id}" aria-pressed="${!!DQ.tbl[id]}"><i class="fa ${DQ.tbl[id]?'fa-bar-chart':'fa-table'}"></i> ${DQ.tbl[id]?'Gráfico':'Tabela'}</button>`}</div><div class="dc-b" id="db-${id}">${body}</div></section>`;
+ const card=(id,ic,t,sub,body,wide,noTbl)=>`<section class="card dc ${wide||''}" id="dc-${id}"><div class="dc-h"><div><h3><i class="fa ${ic}"></i> ${t}</h3>${sub?`<p>${sub}</p>`:''}</div><div class="dc-tools">${typeof cmpBtns==='function'?cmpBtns(id):''}${noTbl?'':`<button type="button" class="lbtn sm" data-tbl="${id}" aria-pressed="${!!DQ.tbl[id]}"><i class="fa ${DQ.tbl[id]?'fa-bar-chart':'fa-table'}"></i> ${DQ.tbl[id]?'Gráfico':'Tabela'}</button>`}</div></div>${DQ.tbl[id]||typeof cmpLegend!=='function'?'':cmpLegend(id)}<div class="dc-b" id="db-${id}">${body}</div></section>`;
  const fd=d=>dDate(d).toLocaleDateString('pt-BR'),per=LEN===1?fd(to):`${fd(from+1)} a ${fd(to)}`,pper=LEN===1?fd(from):`${fd(from-LEN+1)} a ${fd(from)}`;
  let h=`<div class="dash">
   <div class="card dhead"><div><h2><i class="fa fa-bar-chart"></i> Painel da diretoria</h2><p class="soft"><b>${per}</b> (${LEN} dia${LEN>1?'s':''}) comparado com ${LEN>1?`os ${LEN} dias anteriores`:'o dia anterior'} (${pper}). <span class="dsim"><i class="fa fa-flask"></i> base simulada + os protocolos registrados nesta sessão</span></p></div>
@@ -128,21 +128,22 @@ function drawLine(cur,from,to){const box=$('db-dia');let days=[];for(let d=from+
  ov.addEventListener('blur',()=>{[xh,d1,d2].forEach(e=>e.style.display='none');tipHide()})}
 
 /* ---------- barras horizontais (HTML) ---------- */
-function hbars(box,items,o){o=o||{};const mx=Math.max(...items.map(x=>x.v),o.ref||0,1);
- box.innerHTML=`<div class="hb">${items.map((x,i)=>`<div class="hb-r${x.other?' oth':''}${o.click&&!x.other?' clk':''}" tabindex="0" data-hb="${i}"><span class="hb-l" title="${esc(x.label)}">${esc(x.label)}</span><span class="hb-t"><span class="hb-b" style="width:${(x.v/mx*100).toFixed(2)}%"></span>${o.ref?`<span class="hb-ref" style="left:${(o.ref/mx*100).toFixed(2)}%"></span>`:''}</span><span class="hb-v">${o.fmt?o.fmt(x.v):nf(x.v)}${x.s?` <small>${x.s}</small>`:''}</span></div>`).join('')}</div>${o.ref?`<div class="hb-note"><span class="hb-refk"></span> ${o.refLbl}</div>`:''}`;
- box.querySelectorAll('[data-hb]').forEach(el=>{const x=items[+el.dataset.hb];hov(el,()=>[x.label,x.tip||[['',x.s||'',o.fmt?o.fmt(x.v):nf(x.v)]]]);if(o.click&&!x.other){el.onclick=()=>o.click(x);el.onkeydown=e=>{if(e.key==='Enter')o.click(x)}}})}
+function hbars(box,items,o){o=o||{};const cv=o.cid&&typeof cmpValues==='function'?cmpValues(o.cid):null,fm=o.fmt||nf;if(cv)items.forEach(x=>{if(!x.other){const k=x.k!==undefined?x.k:x.label;x.c=cv.has(k)?cv.get(k):0}});
+ const mx=Math.max(...items.map(x=>Math.max(x.v,x.c||0)),o.ref||0,1),dl=x=>{if(!x.c)return '<em class="hb-dn">sem dado</em>';const d=x.v/x.c-1;if(Math.abs(d)<0.005)return '<em class="hb-dn">igual</em>';return `<em class="hb-d ${d>0?'up':'dn'}">${d>0?'+':'−'}${pf(Math.abs(d))}</em>`};
+ box.innerHTML=`<div class="hb">${items.map((x,i)=>`<div class="hb-r${x.other?' oth':''}${o.click&&!x.other?' clk':''}" tabindex="0" data-hb="${i}"><span class="hb-l" title="${esc(x.label)}">${esc(x.label)}</span><span class="hb-t${cv&&!x.other?' two':''}"><span class="hb-b" style="width:${(x.v/mx*100).toFixed(2)}%"></span>${cv&&!x.other?`<span class="hb-c" style="width:${((x.c||0)/mx*100).toFixed(2)}%"></span>`:''}${o.ref?`<span class="hb-ref" style="left:${(o.ref/mx*100).toFixed(2)}%"></span>`:''}</span><span class="hb-v">${fm(x.v)}${x.s?` <small>${x.s}</small>`:''}${cv&&!x.other?`<span class="hb-cv">${x.c?fm(x.c):'—'} ${dl(x)}</span>`:''}</span></div>`).join('')}</div>${o.ref?`<div class="hb-note"><span class="hb-refk"></span> ${o.refLbl}</div>`:''}`;
+ box.querySelectorAll('[data-hb]').forEach(el=>{const x=items[+el.dataset.hb];hov(el,()=>[x.label,(x.tip||[['',x.s||'',fm(x.v)]]).concat(cv&&!x.other?[[CV('--c2'),CMPM[DQ.cmp[o.cid]][0].toLowerCase(),x.c?fm(x.c):'sem dado']]:[])]);if(o.click&&!x.other){el.onclick=()=>o.click(x);el.onkeydown=e=>{if(e.key==='Enter')o.click(x)}}})}
 function drawAs(cur,prev){const box=$('db-as'),key=DQ.as?'sub':'as',g=grp(cur,key),gp=grp(prev,key),n=cur.length||1;
  let it=[...g].map(([k,r])=>({label:k,v:r.length,s:pf(r.length/n),p:(gp.get(k)||[]).length})).sort((a,b)=>b.v-a.v);
  if(DQ.tbl.as){box.innerHTML=tblHTML([DQ.as?'Tópico':'Assunto','Protocolos','% do total','Período anterior','Variação'],it.map(x=>[esc(x.label),nf(x.v),x.s,nf(x.p),x.p?((x.v>=x.p?'+':'−')+pf(Math.abs(x.v/x.p-1))):'—']));return}
  const top=it.slice(0,10),rest=it.slice(10);if(rest.length)top.push({label:`Demais ${rest.length} ${DQ.as?'tópicos':'assuntos'}`,v:rest.reduce((a,x)=>a+x.v,0),s:pf(rest.reduce((a,x)=>a+x.v,0)/n),other:true});
  top.forEach(x=>x.tip=[['','protocolos no período',nf(x.v)],['','do total',x.s],...(x.other?[]:[['','no período anterior',nf(x.p)]])]);
- hbars(box,top,{click:DQ.as?null:x=>{DQ.as=x.label;renderDash()}})}
+ hbars(box,top,{cid:'as',click:DQ.as?null:x=>{DQ.as=x.label;renderDash()}})}
 function drawTas(cur,K){const box=$('db-tas'),g=grp(cur,DQ.as?'sub':'as');
  let it=[...g].filter(([k,r])=>r.length>=(DQ.d2-DQ.d1<7?3:8)).map(([k,r])=>({label:k,v:r.reduce((a,x)=>a+x.t,0)/r.length,n:r.length})).sort((a,b)=>b.v-a.v);
  if(DQ.tbl.tas){box.innerHTML=tblHTML([DQ.as?'Tópico':'Assunto','Tempo médio','Protocolos','vs. média geral'],it.map(x=>[esc(x.label),tf(x.v),nf(x.n),(x.v>=K.t?'+':'−')+pf(Math.abs(x.v/K.t-1))]));return}
  it=it.slice(0,10);it.forEach(x=>x.tip=[['','tempo médio para registrar',tf(x.v)],['','protocolos',nf(x.n)],['','média geral',tf(K.t)]]);
  if(!it.length){box.innerHTML='<p class="soft">Poucos protocolos para comparar.</p>';return}
- hbars(box,it,{fmt:tf,ref:K.t,refLbl:`média geral: ${tf(K.t)}`})}
+ hbars(box,it,{cid:'tas',fmt:tf,ref:K.t,refLbl:`média geral: ${tf(K.t)}`})}
 
 /* ---------- 4. atendentes ---------- */
 function drawAt(cur){const box=$('db-at'),g=grp(cur,'at');
@@ -169,7 +170,7 @@ function drawPv(cur){const box=$('db-pv'),done=cur.filter(x=>x.pv!==null),B=[[0,
 function drawCa(cur){const box=$('db-ca'),g=grp(cur,'canal'),n=cur.length||1,it=[...g].map(([c,r])=>({label:c,v:r.length,s:pf(r.length/n),rem:r.filter(x=>x.rem).length/r.length})).sort((a,b)=>b.v-a.v);
  if(DQ.tbl.ca){box.innerHTML=tblHTML(['Canal','Protocolos','% do total','% remetidos'],it.map(x=>[esc(x.label),nf(x.v),x.s,pf(x.rem)]));return}
  it.forEach(x=>x.tip=[['','protocolos',nf(x.v)],['','do total',x.s],['','remetidos ao Pós-Venda',pf(x.rem)]]);
- hbars(box,it,{click:x=>{DQ.canal=x.label;renderDash()}})}
+ hbars(box,it,{cid:'ca',click:x=>{DQ.canal=x.label;renderDash()}})}
 
 /* ---------- 7. heatmap dia × hora ---------- */
 function drawHm(cur){const box=$('db-hm'),dn=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'],ord=[1,2,3,4,5,6,0],hs=DHR.map((_,i)=>8+i),M={};

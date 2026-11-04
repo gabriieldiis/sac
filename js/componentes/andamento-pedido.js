@@ -1,6 +1,8 @@
 /* Linha do tempo do pedido e números de volume/rastreio. */
 /* ================= linha do tempo do pedido (só dados do ERP) ================= */
-const TRACK={Jadlog:'https://www.jadlog.com.br/jadlog/tracking',Loggi:'https://www.loggi.com/rastreador/'};
+const TRACK={Jadlog:'https://www.jadlog.com.br/jadlog/tracking',Loggi:'https://www.loggi.com/rastreador/',Correios:'https://rastreamento.correios.com.br/app/index.php','Total Express':'https://tracking.totalexpress.com.br/'};
+/* pedido já está com a transportadora ou com o entregador: a situação vem do rastreio, não do ERP */
+const shippedOf=o=>o.mod!=='pick'&&o.steps.some(s=>s[1]&&/transportadora|saiu/i.test(s[0]));
 const VOL={'67431409':'01516419142BR','67537740':'01516422081BR','22700145':'01516470233BR','67509350':'LG5688823412','22633366':'568882354'};
 function trackURL(o){return TRACK[o.carrier]||''}
 function delayTag(o){if(!o.atraso)return '';const u=trackURL(o);
