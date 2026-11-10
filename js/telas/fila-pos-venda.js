@@ -23,13 +23,15 @@ function retForm(p){const ds=DESTS(p),ul=lastOf(p,['env']);
   <div class="f2"><span>E agora?</span><div class="choice">${PROX.map(([l,ic],i)=>`<button type="button" data-prox="${i}" aria-pressed="${(S.prox||0)===i}"><i class="fa ${ic}"></i> ${l}</button>`).join('')}</div></div>`}
 function savePV(p,k,h,txt){const via=VIAS[S.via||0],ds=DESTS(p),m=via==='E-mail'&&(S.mraw||'').trim()?buildMail(S.mraw,{in:'rin',out:'rout',fwd:'fwd'}[S.mdir||(k==='ret'?'in':'out')]):null;
  if(!txt&&!m){toast('Escreva o que foi '+(k==='ret'?'respondido':'solicitado'));$('atxt').focus();return}
+ p.resp=p.resp||ME;
  if(k==='acionar'){const q=ds[+(S.quemI||Math.max(0,ds.indexOf(S.quem)))];const extra=[S.ref?`<b>ID:</b> ${esc(S.ref)}`:'',S.przo?`<b>Prazo informado:</b> ${esc(S.przo)}`:''].filter(Boolean).join(' · ');
   p.tram.push([now(),ME,'env',via,`<b>Acionou ${esc(q)}.</b>${extra?' '+extra:''}<br>${h}`,...(m?[m]:[])]);p.status='Aguardando '+q.split(' ·')[0];p.stage='';toast('Acionamento registrado')}
  else{const q=ds[+(S.quemR||0)],px=S.prox||0;p.tram.push([now(),q,'ret',via,`${h}<br><span class="nx">Próximo passo: <b>${PROX[px][0]}</b></span>`,...(m?[m]:[])]);
   p.stage=['','avisar','enc'][px];p.status=['Aguardando novo retorno','Retorno recebido · avisar cliente','Retorno recebido · pode encerrar'][px];toast('Retorno registrado');
   if(px===2){S.act=null;S.ax='';render();return fimModal(p)}}
  S.act=null;S.ax='';S.mraw='';render()}
-let FQ={st:'',c:{num:'',as:'',cli:'',ped:'',rem:'',st:'',last:''}};
+let FQ={st:'',resp:'',car:'',c:{num:'',as:'',cli:'',ped:'',rem:'',st:'',last:''}};
+const carOf=p=>{const o=p.ped&&ORDERS[p.ped];return o&&o.carrier&&o.carrier!=='—'?o.carrier:''};
 const FSTS=[['novo','Na fila'],['renov','Remetido novamente'],['aguard','Aguardando retorno'],['ret','Retorno recebido']];
 function filaRemAt(p){const l=lastOf(p,['rem']);return l?l[0]:p.ab}
 function filaDays(d){const [x,y,z]=d.slice(0,10).split('/').map(Number);return Math.round((TODAY-new Date(z,y-1,x))/864e5)}
@@ -38,7 +40,8 @@ function filaList(){const all=PROTOS.filter(p=>p.rem&&isOpen(p)),C=FQ.c,key=d=>{
  const st=C.st||FQ.st;
  const f=all.filter(p=>{const c=cliOf(p),l=p.tram[p.tram.length-1],dd=filaDays(filaRemAt(p));
   return has(p.num,C.num)&&(!C.as||p.as===C.as)&&has(c.nome+' '+c.doc,C.cli)&&(C.ped==='sem'?!p.ped:has(p.ped||'',C.ped))
-   &&(!C.rem||(C.rem==='hoje'?dd===0:C.rem==='7'?dd<=7:dd>7))&&(!st||stageOf(p)[0]===st)&&has(l[1]+' '+plain(l[4]),C.last)});
+   &&(!C.rem||(C.rem==='hoje'?dd===0:C.rem==='7'?dd<=7:dd>7))&&(!st||stageOf(p)[0]===st)&&has(l[1]+' '+plain(l[4]),C.last)
+   &&(!FQ.resp||(FQ.resp==='meus'?respPV(p)===ME:FQ.resp==='sem'?!respPV(p):respPV(p)===FQ.resp))&&(!FQ.car||(FQ.car==='sem'?!carOf(p):carOf(p)===FQ.car))});
  f.sort((a,b)=>key(filaRemAt(a)).localeCompare(key(filaRemAt(b))));return {all,f}}
 function filaRowsHTML(f){if(!f.length)return `<tr><td colspan="7" class="empty2">Nenhum protocolo com esses filtros. <button type="button" class="lnk" data-fclr>Limpar filtros</button></td></tr>`;
  return f.map(p=>{const st=stageOf(p),l=p.tram[p.tram.length-1],o=p.ped&&ORDERS[p.ped],c=cliOf(p),r=filaRemAt(p);
@@ -47,25 +50,31 @@ function filaRowsHTML(f){if(!f.length)return `<tr><td colspan="7" class="empty2"
    <td>${esc(c.nome)}<br><span class="soft">${maskDoc(c.doc)}</span></td>
    <td>${p.ped?'#'+p.ped:'<span class="soft">sem pedido</span>'}${o&&o.atraso?'<div style="margin-top:3px">'+delayTag(o)+'</div>':''}</td>
    <td>${r.slice(0,10)}<br><span class="soft">${r.slice(11)}</span></td>
-   <td><span class="pill ${st[2]}">${st[1]}</span></td>
+   <td><span class="pill ${st[2]}">${st[1]}</span><div class="fresp${respPV(p)?'':' none'}"><i class="fa fa-user"></i> ${respPV(p)?esc(respPV(p)):'sem responsável'}</div></td>
    <td class="flast"><span class="soft">${esc(l[0].slice(0,5))} · ${esc(l[1])}</span><span class="fl2">${esc(plain(l[4]).slice(0,180))||esc((l[5]?'E-mail: '+(l[5].assunto||''):''))}</span></td></tr>`}).join('')}
 function renderFila(){const {all,f}=filaList(),C=FQ.c,sc=k=>all.filter(p=>stageOf(p)[0]===k).length;
  const ases=[...new Set(all.map(p=>p.as))].sort((a,b)=>a.localeCompare(b));
  const ti=(k,ph)=>`<input type="search" data-fc="${k}" value="${esc(C[k])}" placeholder="${ph}" aria-label="Filtrar por ${ph}" autocomplete="off">`;
  const sel=(k,lbl,opts)=>`<select data-fc="${k}" aria-label="Filtrar por ${lbl}"><option value="">${lbl}: todos</option>${opts.map(([v,l])=>`<option value="${esc(v)}"${C[k]===v?' selected':''}>${esc(l)}</option>`).join('')}</select>`;
- const anyF=Object.values(C).some(Boolean)||FQ.st;
+ const anyF=Object.values(C).some(Boolean)||FQ.st||FQ.resp||FQ.car;
+ const resps=[...new Set(all.map(respPV).filter(Boolean))].filter(x=>x!==ME).sort(),cars=[...new Set(all.map(carOf).filter(Boolean))].sort(),mine=all.filter(p=>respPV(p)===ME).length,none=all.filter(p=>!respPV(p)).length;
  app.innerHTML=`<div class="fila">${novoCardHTML()}
   <div class="card sbig"><h2><i class="fa fa-folder-open-o" style="color:var(--head)"></i> Pesquisar atendimento</h2>
    ${searchBodyHTML()}</div>
   <div class="card fcard"><div class="fhead"><h2><i class="fa fa-inbox"></i> Protocolos remetidos ao Pós-Venda</h2>
    ${anyF?'<button type="button" class="lnk" data-fclr><i class="fa fa-times"></i> Limpar filtros</button>':''}</div>
+   <div class="ftools"><div class="choice fresp-f" role="group" aria-label="Responsável">${[['','Todos',all.length],['meus','Meus protocolos',mine],['sem','Sem responsável',none]].map(([k,l,n])=>`<button type="button" data-fresp="${k}" aria-pressed="${FQ.resp===k}">${l} <span class="fcnt">${n}</span></button>`).join('')}${resps.length?`<select data-frespsel aria-label="Outro responsável"><option value="">Outro responsável…</option>${resps.map(r=>`<option${FQ.resp===r?' selected':''}>${esc(r)}</option>`).join('')}</select>`:''}</div>
+    <label class="fcar"><span>Transportadora</span><select data-fcar><option value="">Todas</option>${cars.map(c=>`<option${FQ.car===c?' selected':''}>${esc(c)}</option>`).join('')}<option value="sem"${FQ.car==='sem'?' selected':''}>Sem transportadora</option></select></label></div>
    <div class="scroll"><table class="pend ftab"><thead><tr><th>Protocolo</th><th>Assunto</th><th>Cliente</th><th>Pedido</th><th>Remetido em</th><th>Situação</th><th>Último registro</th></tr>
     <tr class="ffl"><th>${ti('num','nº')}</th><th>${sel('as','Assunto',ases.map(a=>[a,a]))}</th><th>${ti('cli','nome ou CPF')}</th><th>${ti('ped','nº')}</th><th>${sel('rem','Quando',[['hoje','Hoje'],['7','Até 7 dias'],['mais7','Há mais de 7 dias']])}</th><th>${sel('st','Situação',FSTS)}</th><th>${ti('last','texto ou quem')}</th></tr></thead>
    <tbody id="ftb">${filaRowsHTML(f)}</tbody></table></div></div></div>`;
  bindCommon();bindNovoCard(renderFila);
  const upd=()=>{const r=filaList();$('ftb').innerHTML=filaRowsHTML(r.f);bindRows()};
  const bindRows=()=>{app.querySelectorAll('#ftb tr[data-open]').forEach(tr=>{tr.onclick=()=>go('proto',{p:tr.dataset.open});tr.onkeydown=e=>{if(e.key==='Enter')go('proto',{p:tr.dataset.open})}});
-  app.querySelectorAll('[data-fclr]').forEach(b=>b.onclick=()=>{FQ.st='';Object.keys(C).forEach(k=>C[k]='');renderFila()})};
+  app.querySelectorAll('[data-fclr]').forEach(b=>b.onclick=()=>{FQ.st='';FQ.resp='';FQ.car='';Object.keys(C).forEach(k=>C[k]='');renderFila()})};
+ app.querySelectorAll('[data-fresp]').forEach(b=>b.onclick=()=>{FQ.resp=b.dataset.fresp;renderFila()});
+ app.querySelector('[data-frespsel]')&&(app.querySelector('[data-frespsel]').onchange=e=>{FQ.resp=e.target.value;renderFila()});
+ app.querySelector('[data-fcar]').onchange=e=>{FQ.car=e.target.value;renderFila()};
  app.querySelectorAll('input[data-fc]').forEach(i=>i.oninput=()=>{C[i.dataset.fc]=i.value;upd()});
  app.querySelectorAll('select[data-fc]').forEach(i=>i.onchange=()=>{C[i.dataset.fc]=i.value;if(i.dataset.fc==='st')FQ.st='';renderFila()});
  app.querySelectorAll('[data-fst]').forEach(b=>b.onclick=()=>{const k=b.dataset.fst,cur=C.st||FQ.st;C.st=cur===k?'':k;FQ.st='';renderFila()});
@@ -82,3 +91,4 @@ function entPagCompact(o,ped){const E=Object.fromEntries(o.entrega),v=VOL[ped],u
   +c('Frete',money(fr))}
  return `<div class="cdiv"><div class="sect-t sm"><i class="fa fa-truck"></i> Entrega</div><div class="cgrid">${ent}</div></div>
   <div class="cdiv"><div class="sect-t sm"><i class="fa fa-credit-card"></i> Pagamento</div><div class="cgrid">${c('Forma',esc(o.pag))}${c('Valor',money(o.total))}</div></div>`}
+

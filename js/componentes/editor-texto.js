@@ -5,7 +5,7 @@ function rte(id,html,ph){return `<div class="rte"><div class="rtb" role="toolbar
 function bindRTE(root,cb){root.querySelectorAll('.rte').forEach(w=>{const ed=w.querySelector('.rta');
  const sync=()=>{w.querySelectorAll('[data-cmd]').forEach(b=>{const c=b.dataset.cmd;if(['bold','italic','underline','insertUnorderedList','insertOrderedList'].includes(c)){let on=false;try{on=document.queryCommandState(c)}catch(e){}b.classList.toggle('on',on&&document.activeElement===ed)}});ed.classList.toggle('empty',!ed.textContent.trim()&&!ed.querySelector('li'));cb&&cb(ed.id,ed.innerHTML)};
  w.querySelectorAll('[data-cmd]').forEach(b=>{b.onmousedown=e=>e.preventDefault();b.onclick=()=>{ed.focus();const c=b.dataset.cmd;
-  if(c==='hl')document.execCommand('hiliteColor',false,'#fff176');else if(c==='red')document.execCommand('foreColor',false,'#c0392b');else if(c==='removeFormat'){document.execCommand('removeFormat');document.execCommand('hiliteColor',false,'transparent')}else document.execCommand(c);sync()}});
+  if(c==='hl')document.execCommand('hiliteColor',false,'#fff176');else if(c==='red')document.execCommand('foreColor',false,'#b0302a');else if(c==='removeFormat'){document.execCommand('removeFormat');document.execCommand('hiliteColor',false,'transparent')}else document.execCommand(c);sync()}});
  ed.addEventListener('input',sync);ed.addEventListener('keyup',sync);ed.addEventListener('mouseup',sync);ed.addEventListener('blur',sync);
  ed.addEventListener('paste',e=>{e.preventDefault();document.execCommand('insertText',false,(e.clipboardData||window.clipboardData).getData('text/plain'))});
  ed.classList.toggle('empty',!ed.textContent.trim())})}

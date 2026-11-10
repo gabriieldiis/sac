@@ -1,8 +1,8 @@
 /* Exibição de e-mails dentro do histórico do protocolo. */
 /* ================= e-mail no protocolo ================= */
-const CHN={'Telefone':['fa-phone','#0073b7'],'WhatsApp':['fa-whatsapp','#1a9e55'],'Chat do site':['fa-comments-o','#00897b'],'E-mail':['fa-envelope','#7b3fa0'],'Redes sociais':['fa-instagram','#c13584'],'Reclame Aqui':['fa-bullhorn','#c0392b'],'Procon / consumidor.gov':['fa-gavel','#34495e'],'Sistema':['fa-cog','#7a8794'],'Interna':['fa-lock','#7a8794']};
-function chnChip(c){const [ic,co]=CHN[c]||['fa-circle','#7a8794'];return `<span class="chn" style="--cc:${co}"><i class="fa ${ic}"></i> ${esc(c)}</span>`}
-const MDIR={rin:['E-mail recebido do responsável','fa-arrow-down','#00a65a'],rout:['E-mail enviado ao responsável','fa-arrow-up','#605ca8'],in:['E-mail recebido do cliente','fa-arrow-down','#7b3fa0'],out:['E-mail enviado ao cliente','fa-arrow-up','#2682bf'],fwd:['E-mail encaminhado internamente','fa-share','#605ca8']};
+const CHN={'Telefone':['fa-phone','#005a90'],'WhatsApp':['fa-whatsapp','#0e6639'],'Chat do site':['fa-comments-o','#00796b'],'E-mail':['fa-envelope','#6a3290'],'Redes sociais':['fa-instagram','#c13584'],'Reclame Aqui':['fa-bullhorn','#b0302a'],'Procon / consumidor.gov':['fa-gavel','#34495e'],'Sistema':['fa-cog','#4f5a65'],'Interna':['fa-lock','#4f5a65']};
+function chnChip(c){const [ic,co]=CHN[c]||['fa-circle','#4f5a65'];return `<span class="chn" style="--cc:${co}"><i class="fa ${ic}"></i> ${esc(c)}</span>`}
+const MDIR={rin:['E-mail recebido do responsável','fa-arrow-down','#00773f'],rout:['E-mail enviado ao responsável','fa-arrow-up','#4b4794'],in:['E-mail recebido do cliente','fa-arrow-down','#6a3290'],out:['E-mail enviado ao cliente','fa-arrow-up','#1565a8'],fwd:['E-mail encaminhado internamente','fa-share','#4b4794']};
 function parseEmail(raw){const L=raw.replace(/\r/g,'').split('\n'),H=/^\s*(De|From)\s*:\s*(.*)$/i,msgs=[];let cur=null;
  for(let i=0;i<L.length;i++){const l=L[i],m=l.match(H);
   if(m&&L.slice(i+1,i+4).some(x=>/^\s*(Enviada em|Enviado em|Enviado|Sent|Data|Date|Para|To)\s*:/i.test(x))){cur={de:m[2].trim(),para:'',cc:'',quando:'',assunto:'',corpo:[]};msgs.push(cur);let j=i+1;

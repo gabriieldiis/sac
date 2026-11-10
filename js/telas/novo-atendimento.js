@@ -16,7 +16,11 @@ function renderNovo(){const a=AS[N.as];let h=`<button type="button" class="backl
    ${N.unk?`<div class="newcli"><div class="hint amber"><i class="fa fa-user-plus"></i><span>${N.unk.length===11?'CPF':'CNPJ'} <b>${fmtDoc(N.unk)}</b> não está na base. Informe o nome para registrar o protocolo.</span></div>
      <div class="nc-f"><label class="f2"><span>${N.unk.length===11?'Nome do cliente':'Razão social'} <span class="req">*</span></span><input type="text" id="nn" autocomplete="off"></label>
      <label class="f2"><span>Telefone ou e-mail <span class="soft" style="font-weight:400">(opcional)</span></span><input type="text" id="nt" autocomplete="off"></label></div>
-     <button type="button" class="gbtn" id="nok" style="align-self:flex-start">Continuar</button></div>`:''}</div></div>`;
+     <button type="button" class="gbtn" id="nok" style="align-self:flex-start">Continuar</button></div>`:''}
+   ${!N.unk&&a.p!=='x'?(N.anon?`<div class="newcli anoncli"><div class="hint"><i class="fa fa-user-secret"></i><span>O protocolo fica <b>sem CPF/CNPJ</b>. Se o cliente passou um nome ou um contato, anote abaixo: ajuda no retorno.</span></div>
+     <div class="nc-f"><label class="f2"><span>Como o cliente se apresentou <span class="soft" style="font-weight:400">(opcional)</span></span><input type="text" id="an_n" autocomplete="off" placeholder="Ex.: Sr. João"></label><label class="f2"><span>Telefone ou e-mail <span class="soft" style="font-weight:400">(opcional)</span></span><input type="text" id="an_t" autocomplete="off"></label></div>
+     <div class="anon-b"><button type="button" class="gbtn" id="an_ok">Continuar sem identificar</button><button type="button" class="lnk" id="an_no">Voltar e buscar o cliente</button></div></div>`
+    :`<button type="button" class="lnk anonb" id="nanon"><i class="fa fa-user-secret"></i> O cliente não quis se identificar</button>`):''}</div></div>`;
   app.innerHTML=`<div class="nflow1">${h}</div>`;bindNovo();setTimeout(()=>($('nn')||$('cq'))?.focus(),20);return}
  const c=N.cli?CLIENTES[N.cli]:N.cliNovo,openPs=PROTOS.filter(p=>isOpen(p)&&(N.cli?p.cli===N.cli:false));
  {const oth=openPs.filter(p=>!(N.ped&&p.ped===N.ped&&p.rem));if(oth.length)h+=othListHTML(oth,N.ped,c&&c.nome)}
@@ -86,6 +90,9 @@ function bindNovo(){bindCommon();bindOut(app,()=>renderNovo());const q=x=>app.qu
   if(o){N.cli=ORDERS[o].cli;N.ped=o;return renderNovo()}
   if(d.length===11||d.length===14){const c=cliByDoc(d);if(c){N.cli=c;autoPed();return renderNovo()}N.unk=d;return renderNovo()}
   N.msg=`Nada encontrado para "${esc(N.q)}". Confira o número.`;renderNovo()});
+ q('#nanon')&&(q('#nanon').onclick=()=>{N.anon=true;renderNovo();setTimeout(()=>$('an_n')?.focus(),20)});
+ q('#an_no')&&(q('#an_no').onclick=()=>{N.anon=false;renderNovo();setTimeout(()=>$('cq')?.focus(),20)});
+ q('#an_ok')&&(q('#an_ok').onclick=()=>{const nm=$('an_n').value.trim(),t=$('an_t').value.trim();N.cliNovo={nome:nm?nm+' (não identificado)':'Cliente não identificado',doc:'',tel:t,anon:true};N.anon=false;autoPed();renderNovo()});
  q('#nok')&&(q('#nok').onclick=()=>{const nm=$('nn').value.trim();if(!nm){toast('Informe o nome');$('nn').focus();return}N.cliNovo={nome:nm,doc:fmtDoc(N.unk),tel:$('nt').value.trim()};N.unk=null;autoPed();renderNovo()});
  app.querySelectorAll('[data-ped]').forEach(b=>b.onclick=()=>{N.ped=b.dataset.ped;renderNovo()});
  q('#semped')&&(q('#semped').onclick=()=>{N.ped='';renderNovo()});

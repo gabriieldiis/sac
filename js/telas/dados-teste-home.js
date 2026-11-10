@@ -10,8 +10,10 @@ const TESTE=[
  ['Atendente','Furo de estoque','Roberto Lima','261.296.531-90','67620318','','Item sem estoque em destaque.'],
  ['Atendente','Cliente com vários pedidos e protocolos','Henrique Barbosa','663.923.321-54','67647120','6892031','5 pedidos em situações diferentes e 4 protocolos em andamento.'],
  ['Atendente','Consulta por pedido sem protocolo','Rafael Borges','444.429.104-48','22015071','','Outro pedido do cliente aparece separado do consultado.'],
- ['Atendente','Novo trâmite em protocolo aberto','Patrícia Gomes','526.018.159-06','67624410','6892020','Novo trâmite com tópico preenchido › Finalizar ou Remeter.'],
+ ['Atendente','Protocolo com o Pós-Venda (travado)','Patrícia Gomes','526.018.159-06','67624410','6892020','Novo trâmite: não há Finalizar, só Registrar trâmite ou Remeter novamente.'],
+ ['Atendente','Cliente que não se identifica','—','','','','Novo atendimento › "Dúvidas sobre o site" › O cliente não quis se identificar.'],
  ['Atendente','Não reconhece a entrega','Ana Paula Souza','355.561.876-81','22633366','','Entrega Super Expressa entregue, mas a cliente tinha pedido cancelamento antes.'],
+ ['Pós-Venda','Assumir protocolo','Henrique Barbosa','663.923.321-54','67647120','6892031','Assumir protocolo › aparece em "Meus protocolos" na fila.'],
  ['Pós-Venda','Encerrar protocolo','Eduardo Ramos','993.518.190-19','22713502','6892025','Encerrar › "Como terminou?" › registro verde no histórico.'],
  ['Pós-Venda','Histórico completo','Sandra Lopes','757.491.186-06','67618833','6892028','Devolução com estorno, do pedido ao encerramento.']];
 function testCardHTML(){const q=v=>v?`<button type="button" class="lnk tq" data-tq="${esc(v)}" title="Pesquisar ${esc(v)}">${esc(v)}</button>`:'<span class="soft">—</span>';

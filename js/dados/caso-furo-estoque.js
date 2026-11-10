@@ -1,7 +1,7 @@
 /* Caso de exemplo: furo de estoque. */
 /* ================= exemplo: furo de estoque ================= */
 Object.assign(ORDERS,{'67620318':{cli:'c7',kom:'22661904',nf:'—',data:'13/10/2026',total:1418.70,mod:'cd',carrier:'Jadlog',state:'furo',origem:'Site Kalunga',loja:'CD',
- say:'Pedido retido na separação: 1 item sem estoque no CD.',sub:'',ic:'fa-exclamation-triangle',col:'#dd4b39',pill:['red','Furo de estoque'],prev:'—',src:[],
+ say:'Pedido retido na separação: 1 item sem estoque no CD.',sub:'',ic:'fa-exclamation-triangle',col:'#b0302a',pill:['red','Furo de estoque'],prev:'—',src:[],
  tl:[['13/10','ERP','Compra aprovada · cartão de crédito 4x'],['14/10 07:40','CD','Furo de estoque: Impressora HP Smart Tank 724 (cód. 220293) sem saldo no endereço de separação'],['14/10 08:05','ERP','Pedido retido em separação aguardando definição']],
  entrega:[['Endereço','R. Exemplo, 220 · Centro · Lorena/SP'],['Transportadora','Jadlog Logística']],
  itens:[['220293','Impressora multifuncional HP Smart Tank 724',1,1249],['671714','Teclado e mouse sem fio TC212 Multi',1,129.90],['614174','Lixa massa e madeira 800-120 Tigre FL',20,0.80]],pag:'Cartão de crédito 4x',

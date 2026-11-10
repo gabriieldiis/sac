@@ -19,9 +19,9 @@ function orderInfoHTML(o,ped,lite){const tot=o.itens.reduce((a,i)=>a+i[2]*i[3],0
    +tile('fa-money','Frete',money(frete))}
  if(lite==='ent')return {ent,pag:tile('fa-credit-card','Forma',esc(o.pag))+tile('fa-money','Valor',money(o.total))};
  const oc=o.tl.filter(x=>!CARRIER_SRC.includes(x[1])).slice().reverse();
- return `<div class="card"><details class="more" style="border:0"><summary><span><i class="fa fa-info-circle" style="color:#888"></i> Mais informações do pedido <span class="soft" style="font-weight:400">· ${lite?'produtos e ocorrências':'produtos, entrega, pagamento, ocorrências'}</span></span></summary><div class="oinfo">
+ return `<div class="card"><details class="more" style="border:0"><summary><span><i class="fa fa-info-circle" style="color:#555555"></i> Mais informações do pedido <span class="soft" style="font-weight:400">· ${lite?'produtos e ocorrências':'produtos, entrega, pagamento, ocorrências'}</span></span></summary><div class="oinfo">
   <section><h3><i class="fa fa-cube"></i> Produtos</h3><div class="prods">${prods}</div><div class="ptot"><span>Frete <b>${money(frete)}</b></span><span>Total da compra <b>${money(o.total)}</b></span></div></section>
   ${lite?'':`<section><h3><i class="fa fa-truck"></i> Entrega</h3><div class="tiles">${ent}</div></section>`}
   <div class="ogrid">${lite?'':`<section><h3><i class="fa fa-credit-card"></i> Pagamento</h3><div class="tiles">${tile('fa-credit-card','Forma',esc(o.pag))}${tile('fa-money','Valor',money(o.total))}</div></section>`}
-  <section><h3><i class="fa fa-list"></i> Ocorrências no ERP</h3><table class="tb"><tbody>${oc.map(([d,s,t])=>`<tr><td style="white-space:nowrap;color:#777">${d}</td><td>${esc(t)}</td></tr>`).join('')}</tbody></table></section></div></div></details></div>`}
+  <section><h3><i class="fa fa-list"></i> Ocorrências no ERP</h3><table class="tb"><tbody>${oc.map(([d,s,t])=>`<tr><td style="white-space:nowrap;color:#555555">${d}</td><td>${esc(t)}</td></tr>`).join('')}</tbody></table></section></div></div></details></div>`}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-cpt]');if(b)copyTxt(b.dataset.cpt,'Endereço copiado')});

@@ -21,7 +21,7 @@ function wideInfoHTML(c,ped,o){const O=ped?ORDERS[ped]:null;
  const acts=(st.u?`<a class="gbtn sm trk" href="${st.u}" target="_blank" rel="noopener"><i class="fa fa-external-link"></i> Rastrear na ${esc(O.carrier)}</a>`:'');
  const oc=O.tl.filter(x=>!CARRIER_SRC.includes(x[1])).slice().reverse();
  const moreH=`<details><summary><i class="fa fa-cube"></i> Produtos <span class="soft">${O.itens.length} · ${money(tot)}</span></summary><div class="scroll"><table class="cprod"><thead><tr><th></th><th>Produto</th><th>Qtd</th><th>Unitário</th><th>Total</th></tr></thead><tbody>${O.itens.map(([cd,d,q,vv])=>`<tr><td><a class="pimg sm" href="${PURL(cd)}" target="_blank" rel="noopener"><img src="${IMG(cd)}" alt="" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('i'),{className:'fa fa-picture-o'}))"></a></td><td><a href="${PURL(cd)}" target="_blank" rel="noopener">${esc(d)}</a><small>Cód. ${cd}</small></td><td>${q}</td><td>${money(vv)}</td><td><b>${money(vv*q)}</b></td></tr>`).join('')}</tbody></table></div></details>
-   <details><summary><i class="fa fa-list"></i> Ocorrências no ERP <span class="soft">${oc.length}</span></summary><table class="tb"><tbody>${oc.map(([d,s2,t])=>`<tr><td style="white-space:nowrap;color:#777">${d}</td><td>${esc(t)}</td></tr>`).join('')}</tbody></table></details>`;
+   <details><summary><i class="fa fa-list"></i> Ocorrências no ERP <span class="soft">${oc.length}</span></summary><table class="tb"><tbody>${oc.map(([d,s2,t])=>`<tr><td style="white-space:nowrap;color:#555555">${d}</td><td>${esc(t)}</td></tr>`).join('')}</tbody></table></details>`;
  const step=!!o.step,isPick=O.mod==='pick',vols=volsOf(O,ped);
  const dl=(l,val,x)=>`<div class="fx-r"><dt>${l}</dt><dd>${val}${x||''}</dd></div>`;
  const entrega=isPick?dl('Loja',esc(E['Loja de retirada']||O.loja))+(O.retirar?dl('Retirar até',O.retirar):'')
@@ -43,7 +43,7 @@ function wideInfoHTML(c,ped,o){const O=ped?ORDERS[ped]:null;
  </section>`}
 function cliLineHTML(c,o){o=o||{};const doc=digits(c.doc).length===14?'CNPJ':'CPF';
  const it=(l,val,cp)=>`<span class="fc-ci"><small>${l}</small><b>${val}</b>${cp||''}</span>`;
- return `<div class="fc-cli"><span class="fc-cn"><i class="fa fa-user"></i> <b>${esc(c.nome)}</b>${o.novo?' <span class="pill blue" style="font-size:11px">novo na base</span>':''}${o.chgCli?` <button type="button" class="lnk chg" data-chg="${o.chgCli}">Alterar</button>`:''}</span>
+ return `<div class="fc-cli"><span class="fc-cn"><i class="fa fa-user"></i> <b>${esc(c.nome)}</b>${o.novo?` <span class="pill ${c.anon?'grey':'blue'}" style="font-size:11px">${c.anon?'não identificado':'novo na base'}</span>`:''}${o.chgCli?` <button type="button" class="lnk chg" data-chg="${o.chgCli}">Alterar</button>`:''}</span>
   ${it(doc,maskDoc(c.doc),cpx(c.doc,doc+' copiado'))}${c.tel?it('Telefone',esc(c.tel),cpx(c.tel,'Telefone copiado')):''}${c.email?it('E-mail',esc(c.email),cpx(c.email,'E-mail copiado')):''}${c.cidade?it('Cidade',esc(c.cidade)):''}</div>`}
 function cpx(v,msg){return v?`<button type="button" class="lnk sm2 cpx" data-cpx="${esc(v)}" data-cpm="${esc(msg||'Copiado')}"><i class="fa fa-copy"></i> copiar</button>`:''}
 function cliCard(c,o){o=o||{};if(!c)return '';const doc=digits(c.doc).length===14?'CNPJ':'CPF';

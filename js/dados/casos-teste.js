@@ -8,7 +8,7 @@ Object.assign(CLIENTES,{
  c16:{nome:'Camila Rocha',doc:'903.628.471-15',cidade:'Campinas / SP',tel:'(19) 99268-0731',email:'camila.rocha@hotmail.com',desde:2022},
  c17:{nome:'Colégio Exemplo Ltda',doc:'28.413.596/0001-07',cidade:'Osasco / SP',tel:'(11) 3602-8800',email:'compras@colegioexemplo.com.br',desde:2014},
  c18:{nome:'Vinícius Araújo',doc:'156.837.402-90',cidade:'Ribeirão Preto / SP',tel:'(16) 98135-7724',email:'vinicius.araujo@gmail.com',desde:2023}});
-const _O=(o)=>Object.assign({sub:'',ic:'fa-truck',col:'#2682bf',prev:'—',src:[],fones:'',origem:'Site Kalunga',loja:'CD',carrier:'Jadlog'},o);
+const _O=(o)=>Object.assign({sub:'',ic:'fa-truck',col:'#1565a8',prev:'—',src:[],fones:'',origem:'Site Kalunga',loja:'CD',carrier:'Jadlog'},o);
 Object.assign(ORDERS,{
  /* 1 · boleto aguardando pagamento */
  '67640112':_O({cli:'c12',kom:'22712044',nf:'—',data:'15/10/2026',total:168.80,mod:'cd',state:'pagamento',stt:'Aguardando pagamento',pill:['amber','Aguardando pagamento'],

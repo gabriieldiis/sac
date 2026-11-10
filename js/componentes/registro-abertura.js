@@ -3,7 +3,7 @@
 function regEntry(t,who,canal,txt,fin,rem,extra,mail){const body=rtrim(txt)+(extra?'<div>'+extra+'</div>':'');
  return [t,who,rem?'rem':'fim',canal,body+(fin?`<br><b>Cliente quer:</b> ${esc(fin)}`:''),mail||undefined,{body,fin,rem}]}
 function rtrim(h){return String(h||'').replace(/(\s|<br\s*\/?>|<div>\s*(<br\s*\/?>)?\s*<\/div>|<p>\s*(<br\s*\/?>)?\s*<\/p>)+$/i,'')}
-function regHTML(d,q,c,rg,mail,e){const col=rg.rem?'#e67e22':'#00a65a';
+function regHTML(d,q,c,rg,mail,e){const col=rg.rem?'#a64f08':'#00773f';
  return hCard({cls:'hreg '+(rg.rem?'rem':'ok'),col,ic:rg.rem?'fa-share':'fa-check',ty:rg.rem?'Remetido ao Pós-Venda':'Finalizado',q,c,d,e,body:(rg.body?`<div class="rtx hbody">${richOut(rg.body)}</div>`:'')+(rg.fin?`<div class="rgfin">Cliente quer: <b>${esc(rg.fin)}</b></div>`:''),mail})}
 /* card do histórico no padrão do SACK: Informações à esquerda, Observações à direita */
 function hCard(o){const e=o.e||{},dt=String(o.d),day=dt.slice(0,10),hr=dt.slice(11);

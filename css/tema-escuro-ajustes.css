@@ -1,5 +1,5 @@
 /* ===== modo escuro "Kalunga noite": camadas com profundidade, sem buracos ===== */
-html.dark{--dk-page:#0d1319;--dk-surf:#16202a;--dk-raise:#1e2a36;--dk-line:#2b3b4b;--dk-txt:#e6ecf2;--dk-mut:#9fb2c4;--dk-brand:#15395a;--dk-brand-line:#2f6f9f;--dk-acc:#5aaee8}
+html.dark{--dk-page:#0d1319;--dk-surf:#16202a;--dk-raise:#1e2a36;--dk-line:#2b3b4b;--dk-txt:#e6ecf2;--dk-mut:#b9c7d4;--dk-brand:#15395a;--dk-brand-line:#2f6f9f;--dk-acc:#5aaee8}
 html.dark .content{color:var(--dk-txt)}
 html.dark .content .card{background:var(--dk-surf);border-color:var(--dk-line);box-shadow:0 1px 0 rgba(255,255,255,.03) inset,0 6px 18px rgba(0,0,0,.35)}
 html.dark .soft,html.dark .kv span,html.dark .ckv>span,html.dark .pfacts span,html.dark .itile span,html.dark .cgrid span,html.dark .op-st,html.dark .pend th,html.dark .cprod th,html.dark .ad-tb th{color:var(--dk-mut)}
@@ -66,3 +66,19 @@ html.dark .othlist{border-left:4px solid #c08a2e}
 html.dark .psticky{background:#1b252f}
 html.dark .cvsep{color:var(--dk-mut)}html.dark .cvsep::before,html.dark .cvsep::after{border-top-color:var(--dk-line)}html.dark .cvsep>span{background:var(--dk-surf);border-color:var(--dk-line)}
 html.dark .cvother{background:var(--dk-page);border-color:var(--dk-line)}html.dark .cvother .cvhead h2{color:var(--dk-mut)}html.dark .cvother .pedrow{background:var(--dk-surf)}
+
+/* contraste mínimo (WCAG AA) no modo escuro */
+html.dark .lnk,html.dark .backlink,html.dark .cpx,html.dark .lnk.chg,html.dark .lnk.sm2{color:#7dbbea}
+html.dark .choice button[aria-pressed="false"]{color:#cfe3f3}
+html.dark .hord button[aria-pressed="false"]{color:#fff!important}
+html.dark td[style*="color:#555555"],html.dark td[style*="color:#555"],html.dark td[style*="color:#4a4a4a"],html.dark td[style*="color:#666"]{color:#c3cdd7!important}
+html.dark .chn{color:color-mix(in srgb,var(--cc) 40%,#fff)}
+html.dark .gbtn.trk{color:#1f1800!important}
+html.dark .hord button[aria-pressed="true"]{color:#7dbbea!important}
+html.dark .bc .sep{color:#8d99a6}
+html.dark .dl.bad{color:#ffaaa6}html.dark .dl.ok{color:#7ee59a}html.dark .dl.neu,html.dark .dl.neu span{color:#d0cfc9}
+html.dark .hcount{background:rgba(0,0,0,.35)}html.dark .fcnt{background:rgba(0,0,0,.3)}
+html.dark .bc .cur,html.dark .bc .sep{color:#b9c4cf}
+html.dark .dtabs button:not([aria-selected="true"]){color:#cfe3f3}html.dark .lbtn.danger{color:#f6c0ba}html.dark .dsim{color:#ddd0ee}
+html.dark .dtabs button[aria-selected="true"]{color:#a6d3f2}
+html.dark .fcnt{background:rgba(0,0,0,.45)}

@@ -1,6 +1,8 @@
 /* Tela do protocolo: cabeçalho, ações (Novo trâmite, Remeter, Encerrar) e formulários. */
 /* ================= protocolo ================= */
-const PACT={ret:'Registrar retorno',acionar:'Registrar acionamento',novop:'Outro assunto: novo protocolo',contato:'Registrar contato',trat:'Adicionar assunto',remeter:'Remeter ao Pós-Venda',fim:'Encerrar protocolo',reab:'Reabrir protocolo'};
+/* responsável no Pós-Venda: quem assumiu, ou quem fez o último acionamento */
+const respPV=p=>{if(p.resp)return p.resp;for(let i=p.tram.length-1;i>=0;i--)if(p.tram[i][2]==='env')return p.tram[i][1];return ''};
+const PACT={assumir:'Assumir protocolo',ret:'Registrar retorno',acionar:'Registrar acionamento',novop:'Outro assunto: novo protocolo',contato:'Registrar contato',trat:'Adicionar assunto',remeter:'Remeter ao Pós-Venda',fim:'Encerrar protocolo',reab:'Reabrir protocolo'};
 const asIc=(a,sz)=>`<span class="asic${sz?' '+sz:''}" style="background:${ASC[(AS[a]||{}).p]||'#999'}" title="${esc(a)}"><i class="fa ${ASI[a]||'fa-circle'}"></i></span>`;
 function openListHTML(ps,ped){const lk=ped?ps.filter(p=>p.ped===ped):[],ot=ped?ps.filter(p=>p.ped!==ped):ps,lim=Math.max(3,lk.length),L=[...lk.sort((a,b)=>b.num-a.num),...ot.sort((a,b)=>b.num-a.num)],more=L.length>lim;
  const tag=p=>ped&&p.ped===ped?'<span class="pbadge this"><i class="fa fa-link"></i> Deste pedido</span>':p.ped?`<span class="pbadge">Pedido #${p.ped}</span>`:'<span class="pbadge">Sem pedido</span>';
@@ -14,11 +16,11 @@ function whoHTML(p){const c=cliOf(p);return `<div class="pwho"><span><span class
 function pHead(p,x){const op=isOpen(p),more=p.trats.length>1?` <span class="pmore">+${p.trats.length-1} assunto${p.trats.length>2?'s':''}</span>`:'';
  return `<div class="phd"><div class="phd-t"><span class="lbl">Protocolo</span><b>${p.num}</b><button type="button" class="cpn" data-cpn="${p.num}" title="Copiar número" aria-label="Copiar número do protocolo"><i class="fa fa-copy"></i></button><span class="mt"><span class="asic sm inv"><i class="fa ${ASI[p.as]||'fa-circle'}"></i></span> ${esc(asTxt(p))} › ${esc(subTxt(p))}${more}</span></div><span class="phtags">${ageTag(p)}<span class="pill ${(p.status==='Finalizado'||p.status==='Encerrado')?'green':op?'amber':'grey'}" style="font-size:13px">${(p.status==='Finalizado'||p.status==='Encerrado')?'<i class="fa fa-check"></i> ':''}${p.status}</span></span>${x||''}</div>`}
 function renderProto(){const p=PROTOS.find(x=>x.num===S.p),op=isOpen(p),c=cliOf(p);tagTram(p);
- const acts=MODE==='pv'?(op?['contato','remeter','fim']:['contato','reab']):['contato'],again=remCount(p)>0||!op;
+ const rp=respPV(p),acts=MODE==='pv'?(op?[...(p.rem&&rp!==ME?['assumir']:[]),'contato','remeter','fim']:['contato','reab']):['contato'],again=remCount(p)>0||!op;
  // 1 cabeçalho fixo
- const meta=[`Aberto em <b>${p.ab.slice(0,5)}</b> por ${esc(p.tram[0][1])} via ${esc(p.canal)}`,MODE==='pv'&&remCount(p)?`Remetido ao Pós-Venda <b>${remCount(p)}x</b>`:'',p.fin?`Cliente quer <b>${esc(p.fin)}</b>`:'',p.asHist&&p.asHist.length?`Assunto anterior: ${p.asHist.map(x=>esc(x.as)+' › '+esc(x.sub)).join(' → ')}`:''].filter(Boolean);
+ const meta=[`Aberto em <b>${p.ab.slice(0,5)}</b> por ${esc(p.tram[0][1])} via ${esc(p.canal)}`,p.rem&&op?`<span class="presp${rp?'':' none'}"><i class="fa fa-user"></i> Responsável no Pós-Venda: <b>${rp?esc(rp):'ninguém assumiu ainda'}</b></span>`:'',MODE==='pv'&&remCount(p)?`Remetido ao Pós-Venda <b>${remCount(p)}x</b>`:'',p.fin?`Cliente quer <b>${esc(p.fin)}</b>`:'',p.asHist&&p.asHist.length?`Assunto anterior: ${p.asHist.map(x=>esc(x.as)+' › '+esc(x.sub)).join(' → ')}`:''].filter(Boolean);
  let h=`<div class="psticky">${back}<div class="card pcard pfix">${pHead(p)}<div class="pmeta">${meta.map(x=>`<span>${x}</span>`).join('')}</div></div></div>`;
- if(S.novo)h+=`<div class="card okbox"><div class="big-status"><div class="dot" style="background:#00a65a"><i class="fa fa-check"></i></div><div><p class="say" style="font-size:18px;margin:0">Protocolo <b>${p.num}</b> ${p.rem?'registrado e remetido ao Pós-Venda':'registrado'}</p>
+ if(S.novo)h+=`<div class="card okbox"><div class="big-status"><div class="dot" style="background:#00773f"><i class="fa fa-check"></i></div><div><p class="say" style="font-size:18px;margin:0">Protocolo <b>${p.num}</b> ${p.rem?'registrado e remetido ao Pós-Venda':'registrado'}</p>
    <div class="okbtns"><button type="button" class="lbtn sm" data-cpn="${p.num}"><i class="fa fa-copy"></i> Copiar nº</button><button type="button" class="gbtn sm" id="nnovo"><i class="fa fa-plus"></i> Novo atendimento</button><button type="button" class="lbtn sm" id="nmesmo"><i class="fa fa-user"></i> Outro assunto, mesmo cliente</button></div></div></div>
    <div style="margin-top:12px"><b style="font-size:13.5px">Diga ao cliente:</b><div class="say-cli" style="margin-top:6px">${esc(cliMsg(p))}</div></div></div>`;
  // 2 resumo do protocolo (cliente e pedido ficam no painel lateral)
@@ -29,13 +31,14 @@ function renderProto(){const p=PROTOS.find(x=>x.num===S.p),op=isOpen(p),c=cliOf(
  L+=histSecHTML(p);
  // 4 ações
  L+=`<div class="card psec pactsec${S.act?'':' stk'}"><div class="sect-t"><i class="fa fa-hand-pointer-o"></i> O que você quer fazer?</div>
-  <div class="pacts2">${acts.map(k=>`<button type="button" class="${S.act===k?'gbtn blue':k==='contato'?'gbtn':k==='fim'?'lbtn danger':'lbtn'}" data-act="${k}"><i class="fa ${PACI[k]}"></i> ${k==='remeter'&&again&&MODE==='pv'?'Remeter novamente ao Pós-Venda':k==='remeter'?'Remeter ao Pós-Venda':k==='contato'?'Novo trâmite':PACT[k]}</button>`).join('')}</div>
+  <div class="pacts2">${acts.map(k=>`<button type="button" class="${S.act===k||k==='assumir'?'gbtn blue':k==='contato'?'gbtn':k==='fim'?'lbtn danger':'lbtn'}" data-act="${k}"><i class="fa ${PACI[k]}"></i> ${k==='assumir'?(rp?`Assumir protocolo <span style="font-weight:400">· hoje com ${esc(rp)}</span>`:'Assumir protocolo'):k==='remeter'&&again&&MODE==='pv'?'Remeter novamente ao Pós-Venda':k==='remeter'?'Remeter ao Pós-Venda':k==='contato'?'Novo trâmite':PACT[k]}</button>`).join('')}</div>
   ${S.act?actForm(p):''}</div>`;
  // 5 cliente e pedido (lateral no desktop, embaixo no celular)
  h+=`<div class="play"><div class="pL">${L}</div>${SPLIT}<div class="pS">${sidePanelHTML(c,p.ped||null,{self:p.num,noPed:p.ped?'':'Protocolo sem pedido vinculado.'})}</div></div>`;
  app.innerHTML=h;stickTop();bindSplit();bindCommon();
  app.querySelectorAll('[data-act]').forEach(b=>b.onclick=()=>{const k=b.dataset.act;
   if(k==='reab'){p.status=p.rem?'Com o Pós-Venda':'Reaberto';if(MODE==='pv')p.stage='';p.trats.forEach(t=>t.st='Aberta');p.tram.push([now(),ME,'sis','Sistema','Protocolo reaberto.']);toast('Protocolo reaberto');S.act=null;S.novo=false;return render()}
+  if(k==='assumir'){const ant=respPV(p);p.resp=ME;p.tram.push([now(),ME,'sis','Sistema',`<b>Protocolo assumido por ${esc(ME)}.</b>${ant&&ant!==ME?` Antes estava com ${esc(ant)}.`:''}`]);tagE(p.tram[p.tram.length-1],p);toast('Protocolo assumido: ele aparece em "Meus protocolos" na fila');return render()}
   if(k==='fim'){S.act=null;S.novo=false;render();return fimModal(p)}
   if(k==='ret'||k==='acionar'){S.quem=respOf(p);S.via=0;S.prox=0;S.ref='';S.przo=''}
   if(k==='novop'){go('home',{keep:{cli:p.cli,cliNovo:p.cliNovo}});toast('Escolha o assunto do novo protocolo: o cliente já vem preenchido');return}
@@ -55,7 +58,7 @@ function renderProto(){const p=PROTOS.find(x=>x.num===S.p),op=isOpen(p),c=cliOf(
  app.querySelectorAll('[data-pvf]').forEach(el=>el.oninput=el.onchange=()=>{S[el.dataset.pvf]=el.value;if(el.dataset.rr)render()});
  app.querySelectorAll('[data-prox]').forEach(b=>b.onclick=()=>{S.prox=+b.dataset.prox;app.querySelectorAll('[data-prox]').forEach(x=>x.setAttribute('aria-pressed',x===b))});
  const sv=$('asave');if(sv)sv.onclick=()=>saveAct(p);app.querySelectorAll('[data-tsave]').forEach(b=>b.onclick=()=>saveAct(p,b.dataset.tsave))}
-const PACI={ret:'fa-reply',acionar:'fa-paper-plane',novop:'fa-plus-square-o',contato:'fa-phone',trat:'fa-plus',remeter:'fa-share',fim:'fa-check-square-o',reab:'fa-undo'};
+const PACI={assumir:'fa-hand-paper-o',ret:'fa-reply',acionar:'fa-paper-plane',novop:'fa-plus-square-o',contato:'fa-phone',trat:'fa-plus',remeter:'fa-share',fim:'fa-check-square-o',reab:'fa-undo'};
 function actForm(p){const k=S.act;
  const F={contato:`<div class="aform-t">Novo trâmite</div><label class="f2"><span>Por onde?</span><select id="acanal">${CANAIS.map((x,i)=>`<option value="${i}" ${+(S.canal||0)===i?'selected':''}>${x}</option>`).join('')}</select></label>${CANAIS[S.canal||0]==='E-mail'?mailFormHTML('a',S.mdir||'in',S.mraw||''):''}${topBlock(p)}${chgBlock(p)}<div class="f2"><span>${CANAIS[S.canal||0]==='E-mail'?'Resumo para o histórico <span class="soft" style="font-weight:400">(opcional quando o e-mail é colado)</span>':'O que foi conversado <span class="req">*</span>'}</span>${S.ttop&&!S.chg?skGroups('atxt',false,{as:p.as,sub:S.ttop,ped:p.ped,canal:S.canal||0,keys:MODE==='pv'?['cli','sol']:['cli','pv','sol']}):''}${rte('atxt',S.ax)}</div>
    ${MODE==='pv'||true?'':`<label class="chk remchk"><input type="checkbox" id="crem" ${S.crem?'checked':''}><span>${remCount(p)||!isOpen(p)?'Remeter <b>novamente</b> ao Pós-Venda':'Remeter ao Pós-Venda'} <span class="soft" style="font-weight:400">· o cliente trouxe algo que o Pós-Venda precisa tratar</span></span></label>
@@ -67,7 +70,8 @@ function actForm(p){const k=S.act;
    ${p.rem?'':`<label class="chk"><input type="checkbox" id="trem" ${S.trem!==false?'checked':''}> Remeter ao Pós-Venda</label>`}`,
   ret:retForm(p),acionar:acionarForm(p),
   remeter:`<div class="aform-t">Remeter ao Pós-Venda</div>${topBlock(p)}${chgBlock(p)}<div class="f2"><span>O que o Pós-Venda precisa fazer <span class="req">*</span></span>${S.ttop&&!S.chg?skGroups('atxt',false,{as:p.as,sub:S.ttop,ped:p.ped,canal:S.canal||0,keys:['cli','pv']}):''}${rte('atxt',S.ax)}</div>`}[k];
- if(k==='contato'&&MODE!=='pv')return `<div class="aform">${F}<div class="regact"><span class="ra-q">Trâmite pronto? Escolha como o protocolo fica:</span><div class="ra-btns"><button type="button" class="ra-b ra-rem" data-tsave="rem"><i class="fa fa-share"></i><span><b>Remeter ao Pós-Venda</b><small>o Pós-Venda continua o caso</small></span></button><button type="button" class="ra-b ra-fin" data-tsave="fin"><i class="fa fa-check-circle"></i><span><b>Finalizar</b><small>resolvido no atendimento</small></span></button></div><button type="button" class="lnk" data-act="${k}" style="align-self:flex-start">Cancelar</button></div></div>`;
+ const lock=p.rem&&isOpen(p),rp=respPV(p);
+ if(k==='contato'&&MODE!=='pv')return `<div class="aform">${F}<div class="regact"><span class="ra-q">Trâmite pronto? ${lock?'Escolha como registrar:':'Escolha como o protocolo fica:'}</span>${lock?`<span class="lockpv"><i class="fa fa-lock"></i> Este protocolo está com o Pós-Venda${rp?` (${esc(rp)})`:''}. Só o Pós-Venda pode finalizar ou encerrar.</span>`:''}<div class="ra-btns"><button type="button" class="ra-b ra-rem" data-tsave="rem"><i class="fa fa-share"></i><span><b>${lock?'Remeter novamente':'Remeter ao Pós-Venda'}</b><small>${lock?'o cliente trouxe algo novo para o Pós-Venda tratar':'o Pós-Venda continua o caso'}</small></span></button>${lock?`<button type="button" class="ra-b ra-tram" data-tsave="tram"><i class="fa fa-comments"></i><span><b>Registrar trâmite</b><small>fica no histórico; o caso continua com o Pós-Venda</small></span></button>`:`<button type="button" class="ra-b ra-fin" data-tsave="fin"><i class="fa fa-check-circle"></i><span><b>Finalizar</b><small>resolvido no atendimento</small></span></button>`}</div><button type="button" class="lnk" data-act="${k}" style="align-self:flex-start">Cancelar</button></div></div>`;
  return `<div class="aform">${F}<div style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="gbtn" id="asave"><i class="fa fa-check"></i> ${k==='remeter'?'Remeter':k==='ret'?'Registrar retorno':k==='acionar'?'Registrar acionamento':k==='trat'?'Adicionar assunto':S.crem?'Salvar e remeter':'Salvar'}</button><button type="button" class="lbtn" data-act="${k}">Cancelar</button></div></div>`}
 function saveAct(p,route){const k=S.act,h=clean(S.ax||''),txt=txtOf(h);
  if(k==='trat'&&(!S.tas||!S.tsub)){toast(S.tas?'Escolha o sub-assunto':'Escolha o assunto');return}
@@ -83,7 +87,7 @@ function saveAct(p,route){const k=S.act,h=clean(S.ax||''),txt=txtOf(h);
  if(k==='contato'){const h2=clean(S.ax2||'');if(S.crem&&!txtOf(h2)){toast('Escreva o que o Pós-Venda precisa fazer');$('atxt2').focus();return}
   const ch=CANAIS[$('acanal').value];if(S.chg)mudarAssunto(p);
   if(route==='rem'){if(am)p.tram.push([now(),ME,am.dir==='fwd'?'fwd':'cli',ch,'',am]);const n0r=p.tram.length;remeterP(p,h);p.tram[n0r][3]=ch}
-  else if(route==='fin'){p.tram.push([now(),ME,'fim',ch,txt?h:'',...(am?[am]:[])]);p.status='Finalizado';p.trats.forEach(t=>t.st='Concluída')}
+  else if(route==='fin'&&!(p.rem&&isOpen(p))){p.tram.push([now(),ME,'fim',ch,txt?h:'',...(am?[am]:[])]);p.status='Finalizado';p.trats.forEach(t=>t.st='Concluída')}
   else p.tram.push([now(),ME,am&&am.dir==='fwd'?'fwd':'cli',ch,txt?h:'',...(am?[am]:[])]);if(S.crem){remeterP(p,h2);toast('Contato registrado e remetido ao Pós-Venda')}else toast('Contato registrado')}
  if(k==='trat'){const as=S.tas,sb=S.tsub,rm=$('trem')?$('trem').checked:false;p.trats.push({as,sub:sb,st:'Aberta'});if(!isOpen(p))p.status='Reaberto';
   p.tram.push([now(),ME,'sis','Sistema',`<b>Novo assunto:</b> ${esc(as)} › ${esc(sb)}<br>${h}`]);
