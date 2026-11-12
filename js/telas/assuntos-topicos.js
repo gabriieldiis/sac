@@ -3,6 +3,8 @@
 /* um sub-assunto inativo fica marcado com .off na própria entrada do array (["nome","r"|"v"]) */
 const asOn=()=>Object.keys(AS).filter(a=>!AS[a].off);
 const subsOn=a=>AS[a].s.filter(x=>!x.off);
+/* assuntos que podem abrir um protocolo novo (Abatimento só entra em protocolo já aberto) */
+const asNovo=()=>asOn().filter(a=>!AS[a].soTram);
 const AQ={sel:'Consulta de Pedido',q:'',f:'all',nv:null,log:[]};
 const ICOPTS=['fa-tag','fa-question-circle','fa-file-text-o','fa-truck','fa-credit-card','fa-gift','fa-star','fa-wrench','fa-users','fa-building','fa-envelope','fa-shield'];
 const PNM={x:'Obrigatório',o:'Opcional',n:'Não pede'};

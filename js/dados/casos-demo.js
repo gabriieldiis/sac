@@ -111,3 +111,4 @@ VOL['67639004']='LG5714400921';
   tram:[T('14/10/2026 10:10','Amanda V.','cli','Chat do site','O CEP 01310-930 traz a rua errada no cadastro do cliente.'),
    T('14/10/2026 10:13','Amanda V.','rem','Sistema','<b>Remetido ao Pós-Venda.</b><br>Corrigir o logradouro na base de CEP.')]});
 })();
+

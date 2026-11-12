@@ -5,13 +5,27 @@ function novoCardHTML(){const k=S.keep&&(S.keep.cli||S.keep.cliNovo)?(S.keep.cli
  return `<section class="card novohero" aria-labelledby="nvt"><div class="nvh"><span class="nvi"><i class="fa fa-plus"></i></span><div><h2 id="nvt">Novo atendimento</h2><p>Digite ou escolha o assunto para começar.</p></div></div>
   ${k?`<div class="hint"><i class="fa fa-user"></i><span>Cliente <b>${esc(k.nome)}</b> já vem preenchido. <button type="button" class="lnk" id="nokeep">Outro cliente</button></span></div>`:''}
   ${comboHTML('cbas','Digite ou escolha o assunto… ex.: estorno, garantia, atraso')}</section>`}
-function bindNovoCard(rr){bindCombo('cbas',asOn(),(a,sub)=>{N_SUBPRE=sub||'';startNovo(a)});$('nokeep')&&($('nokeep').onclick=()=>{S.keep=null;rr()})}
+function bindNovoCard(rr){bindCombo('cbas',asNovo().concat(asOn().filter(a=>AS[a].soTram)),(a,sub)=>{if(AS[a].soTram)return go('home',{abat:1});N_SUBPRE=sub||'';startNovo(a)},{meta:asMetaTram});$('nokeep')&&($('nokeep').onclick=()=>{S.keep=null;rr()})}
+/* Abatimento: não abre protocolo novo, só entra num protocolo aberto com pedido. Aqui o atendente acha o protocolo. */
+const asMetaTram=a=>AS[a].soTram?'Só entra em protocolo já aberto':`${ASM[AS[a].p]} · ${subsOn(a).length} sub-assuntos`;
+const abatOK=p=>isOpen(p)&&!!p.ped;
+function abatBusca(q){const d=digits(q),t=normT(q);if(d.length<3&&t.length<3)return null;
+ return PROTOS.filter(abatOK).filter(p=>{const c=cliOf(p)||{};return d.length>=3?(p.num.includes(d)||String(p.ped).includes(d)||digits(c.doc).includes(d)):normT(c.nome).includes(t)}).slice(0,8)}
+function abatCardHTML(){const R=abatBusca(S.abq||''),q=S.abq||'';
+ return `<section class="card novohero abhero" aria-labelledby="abt"><div class="nvh"><span class="nvi ab"><i class="fa fa-percent"></i></span><div><h2 id="abt">Abatimento</h2><p>O abatimento não abre protocolo novo: ele entra como mais um assunto num protocolo <b>já aberto</b> do pedido.</p></div><button type="button" class="lnk" id="abx" style="margin-left:auto">Voltar</button></div>
+  <label class="f2"><span>Protocolo, pedido, CPF/CNPJ ou nome do cliente</span><input type="search" id="abq" value="${esc(q)}" placeholder="Ex.: 6892035, 67647120 ou 663.923.321-54" autocomplete="off"></label>
+  <div id="abr" aria-live="polite">${abatResHTML(R,q)}</div></section>`}
+function abatResHTML(R,q){if(!R)return '<p class="soft">Digite pelo menos 3 letras ou números.</p>';
+ if(!R.length)return `<div class="hint warn"><i class="fa fa-exclamation-triangle"></i><span>Nenhum protocolo aberto com pedido para "${esc(q)}". Sem protocolo aberto, abra um novo atendimento com o assunto do problema (ex.: Consulta de Pedido) e depois registre o abatimento nele.</span></div>`;
+ return `<div class="rcl">${R.map(p=>{const c=cliOf(p);return `<button type="button" class="rci" data-abp="${p.num}">${asIc(p.as)}<span class="rct"><b>${esc(asTxt(p))}</b><span>${esc(c?.nome||'')} · pedido #${p.ped}</span></span><span class="rcm"><span class="rcn">${p.num}</span>${stPill(p)}<small>Abatimento <i class="fa fa-arrow-right"></i></small></span></button>`}).join('')}</div>`}
+function bindAbat(){const i=$('abq');if(!i)return;const draw=()=>{$('abr').innerHTML=abatResHTML(abatBusca(S.abq||''),S.abq||'');$('abr').querySelectorAll('[data-abp]').forEach(b=>b.onclick=()=>{go('proto',{p:b.dataset.abp,act:'abat'});setTimeout(()=>app.querySelector('[data-pvf="abv"]')?.focus(),40)})};
+ i.oninput=()=>{S.abq=i.value;draw()};draw();i.focus();$('abx').onclick=()=>go('home')}
 function renderHome(){if(MODE==='pv')return renderFila();
- app.innerHTML=`<div class="sackhome">${novoCardHTML()}
+ app.innerHTML=`<div class="sackhome">${S.abat?abatCardHTML():novoCardHTML()}
   <div class="card sbig"><h2><i class="fa fa-folder-open-o" style="color:var(--head)"></i> Pesquisar atendimento</h2>
    ${searchBodyHTML()}</div>${testCardHTML()}</div>`;
  app.querySelectorAll('[data-as]').forEach(b=>b.onclick=()=>{N_SUBPRE='';startNovo(b.dataset.as)});
- bindNovoCard(renderHome);bindCommon();bindSearch(renderHome)}
+ bindNovoCard(renderHome);bindAbat();bindCommon();bindSearch(renderHome)}
 function recentHTML(){const k=p=>{const t=p.tram[p.tram.length-1]?.[0]||p.ab,[a,b]=t.split(' '),[d,m,y]=a.split('/');return y+m+d+(b||'')};
  const L=PROTOS.slice().sort((a,b)=>k(b).localeCompare(k(a))).slice(0,6);if(!L.length)return '';
  return `<div class="card sbig rcnt"><h2><i class="fa fa-history" style="color:var(--head)"></i> Movimentados por último</h2><p class="soft rcnt-s">Os protocolos com registro mais recente. Clique para abrir.</p>

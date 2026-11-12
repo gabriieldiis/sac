@@ -82,3 +82,5 @@ html.dark .bc .cur,html.dark .bc .sep{color:#b9c4cf}
 html.dark .dtabs button:not([aria-selected="true"]){color:#cfe3f3}html.dark .lbtn.danger{color:#f6c0ba}html.dark .dsim{color:#ddd0ee}
 html.dark .dtabs button[aria-selected="true"]{color:#a6d3f2}
 html.dark .fcnt{background:rgba(0,0,0,.45)}
+html.dark .content .card.novohero.abhero{background:#2a1c10;border-color:#e08a3c}html.dark .abhero h2{color:#f2b277}
+html.dark .htl2 li.cur .ti{border-color:#3ddc84;box-shadow:0 0 0 3px #1c1c1c,0 0 0 6px rgba(61,220,132,.22)}html.dark .htl2 li.cur::before{border-color:#3ddc84}

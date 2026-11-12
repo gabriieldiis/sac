@@ -22,10 +22,10 @@ function wideInfoHTML(c,ped,o){const O=ped?ORDERS[ped]:null;
  const oc=O.tl.filter(x=>!CARRIER_SRC.includes(x[1])).slice().reverse();
  const moreH=`<details><summary><i class="fa fa-cube"></i> Produtos <span class="soft">${O.itens.length} · ${money(tot)}</span></summary><div class="scroll"><table class="cprod"><thead><tr><th></th><th>Produto</th><th>Qtd</th><th>Unitário</th><th>Total</th></tr></thead><tbody>${O.itens.map(([cd,d,q,vv])=>`<tr><td><a class="pimg sm" href="${PURL(cd)}" target="_blank" rel="noopener"><img src="${IMG(cd)}" alt="" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('i'),{className:'fa fa-picture-o'}))"></a></td><td><a href="${PURL(cd)}" target="_blank" rel="noopener">${esc(d)}</a><small>Cód. ${cd}</small></td><td>${q}</td><td>${money(vv)}</td><td><b>${money(vv*q)}</b></td></tr>`).join('')}</tbody></table></div></details>
    <details><summary><i class="fa fa-list"></i> Ocorrências no ERP <span class="soft">${oc.length}</span></summary><table class="tb"><tbody>${oc.map(([d,s2,t])=>`<tr><td style="white-space:nowrap;color:#555555">${d}</td><td>${esc(t)}</td></tr>`).join('')}</tbody></table></details>`;
- const step=!!o.step,isPick=O.mod==='pick',vols=volsOf(O,ped);
+ const step=!!o.step,isPick=O.mod==='pick',vols=volumesDoPedido(O,ped);
  const dl=(l,val,x)=>`<div class="fx-r"><dt>${l}</dt><dd>${val}${x||''}</dd></div>`;
- const entrega=isPick?dl('Loja',esc(E['Loja de retirada']||O.loja))+(O.retirar?dl('Retirar até',O.retirar):'')
-  :(end?dl('Endereço',esc(end),cpx(end,'Endereço copiado')):'')+(vols.length?dl(vols.length>1?'Volumes':'Volume',volLines(O,ped)):'')+dl('Transportadora',esc(O.carrier||'—'));
+ const entrega=isPick?dl('Loja',esc(E['Loja de retirada']||O.loja))+(O.retirar?dl('Retirar até',O.retirar):'')+dl('Volume e itens',volLines(O,ped))
+  :(end?dl('Endereço',esc(end),cpx(end,'Endereço copiado')):'')+dl(vols.length>1?'Volumes e itens':'Volume e itens',volLines(O,ped))+dl('Transportadora',esc(O.carrier||'—'));
  const pagto=dl('Nota fiscal',nf||'<span class="soft">não emitida</span>',nf?cpx(nf,'Nº da nota copiado'):'')
   +dl('Valor',`${money(O.total)} <span class="soft">${esc(O.pag)}${isPick?'':' · frete '+money(fr)}</span>`)
   +dl('Compra',`${O.data} <span class="soft">${esc(O.origem)}</span>`)

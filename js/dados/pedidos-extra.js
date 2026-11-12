@@ -15,15 +15,19 @@ const VOLS={'67612450':[
  ['01516480011BR','ent','10/10 14:02','Cadeira gamer (1/4)'],['01516480012BR','ent','10/10 14:02','Cadeira gamer (2/4)'],['01516480013BR','ent','10/10 14:02','Cadeira gamer (3/4)'],['01516480014BR','tr','12/10 09:40','Cadeira gamer (4/4)'],
  ['01516480015BR','ent','10/10 14:05','Impressora HP'],['01516480016BR','ent','10/10 14:05','Teclado e mouse (2 un.)'],['01516480017BR','sai','16/10 07:20','Lixas (10 un.)'],['01516480018BR','tr','13/10 18:02','Manual e acessórios'],['01516480019BR','par','08/10 22:15','Caixa avulsa']]};
 VOL['67612450']=VOLS['67612450'][0][0];
+/* composição de cada volume do pedido 67612450 */
+(()=>{const I=Object.fromEntries(ORDERS['67612450'].itens.map(i=>[i[0],i])),it=(c,q,d)=>[c,d||I[c][1],q],[ca,im,te,li]=ORDERS['67612450'].itens.map(i=>i[0]);
+ ORDERS['67612450'].volItens=VOLS['67612450'].map(v=>({cod:v[0],lab:v[3],itens:[]}));const V=ORDERS['67612450'].volItens;
+ [0,1,2,3].forEach(i=>V[i].itens=[it(ca,1)]);V[4].itens=[it(im,1)];V[5].itens=[it(te,2)];V[6].itens=[it(li,10)];V[7].itens=[it(ca,null,'Manual e acessórios da cadeira gamer')];V[8].itens=[[null,'Caixa avulsa: itens não identificados pela transportadora',null]]})();
 const VST={ent:['Entregue','green','fa-check'],tr:['Em trânsito','blue','fa-truck'],sai:['Saiu para entrega','blue','fa-road'],par:['Sem movimentação','red','fa-exclamation-triangle']};
 function volBoxHTML(o,ped){const L=VOLS[ped],n=L.length,ent=L.filter(v=>v[1]==='ent').length,par=L.filter(v=>v[1]==='par').length,u=trackURL(o),late=false,lim=4;
- const row=(v,i)=>`<li class="vl-${v[1]}${i>=lim?' vmore':''}"><b class="vl-n">${v[0]}</b><span class="vl-m"><span class="pill ${VST[v[1]][1]}"><i class="fa ${VST[v[1]][2]}"></i> ${VST[v[1]][0]}</span><span class="vl-d">${v[2]}</span><span class="vl-x">${esc(v[3])}</span></span><button type="button" class="ske-b" data-cpv="${v[0]}" title="Copiar o nº do volume" aria-label="Copiar o volume ${v[0]}"><i class="fa fa-copy"></i></button></li>`;
+ const VI=Object.fromEntries(volumesDoPedido(o,ped).map(x=>[x.cod,x])),row=(v,i)=>`<li class="vl-${v[1]}${i>=lim?' vmore':''}">${volAcc(VI[v[0]]||{cod:v[0],lab:v[3],itens:[]},false,`<span class="vl-m"><span class="pill ${VST[v[1]][1]}"><i class="fa ${VST[v[1]][2]}"></i> ${VST[v[1]][0]}</span><span class="vl-d">${v[2]}</span></span>`)}</li>`;
  const ord=[...L].sort((a,b)=>['par','tr','sai','ent'].indexOf(a[1])-['par','tr','sai','ent'].indexOf(b[1]));
  return `<div class="dbox track vbox"><i class="fa fa-cubes"></i><div>
   <b>${ent===n?'Todos os volumes entregues':`Entrega parcial: ${ent} de ${n} volumes entregues`}</b><span>Transportadora ${esc(o.carrier)} · confira a situação de cada volume no rastreio${par?` · <b class="st-bad">${par} sem movimentação</b>`:''}</span>
   <div class="vprog" role="img" aria-label="${ent} de ${n} volumes entregues">${L.map(v=>`<i class="vp-${v[1]}"></i>`).join('')}</div>
   <ul class="vlist${S.vAll?' all':''}">${ord.map(row).join('')}</ul>
-  <div class="dbtns">${n>lim?`<button type="button" class="lnk" data-vall>${S.vAll?'Mostrar menos':`Ver os ${n} volumes`}</button>`:''}${u?`<a class="gbtn sm trk" href="${u}" target="_blank" rel="noopener"><i class="fa fa-external-link"></i> Rastrear na ${esc(o.carrier)}</a>`:''}<button type="button" class="lbtn sm" data-cpall="${L.map(v=>v[0]).join(' ')}"><i class="fa fa-copy"></i> Copiar os ${n} volumes</button></div></div></div>`}
+  <div class="dbtns"><button type="button" class="lnk" data-vaccall>Abrir todos os volumes</button>${n>lim?`<button type="button" class="lnk" data-vall>${S.vAll?'Mostrar menos':`Ver os ${n} volumes`}</button>`:''}${u?`<a class="gbtn sm trk" href="${u}" target="_blank" rel="noopener"><i class="fa fa-external-link"></i> Rastrear na ${esc(o.carrier)}</a>`:''}<button type="button" class="lbtn sm" data-cpall="${L.map(v=>v[0]).join(' ')}"><i class="fa fa-copy"></i> Copiar os ${n} volumes</button></div></div></div>`}
 document.addEventListener('click',e=>{const a=e.target.closest('[data-vall]');if(a){S.vAll=!S.vAll;const y=scrollY;render();scrollTo(0,y)}const c=e.target.closest('[data-cpall]');if(c)copyTxt(c.dataset.cpall.replace(/ /g,'\n'),'Volumes copiados')});
 /* protocolos de exemplo: cada um no pedido certo */
 (()=>{const a=PROTOS.find(p=>p.num==='6891950');if(a)a.ped='22671530';const b=PROTOS.find(p=>p.num==='6890215');if(b)b.ped=null})();
